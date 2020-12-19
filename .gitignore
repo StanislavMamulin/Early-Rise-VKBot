@@ -1,0 +1,4 @@
+node_modules/
+startBot.sh
+config/
+.eslintrc.js
