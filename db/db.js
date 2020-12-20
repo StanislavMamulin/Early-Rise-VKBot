@@ -49,3 +49,34 @@ module.exports.userExists = async userID => {
 
     return !!user
 }
+
+module.exports.addTime = async (userID, date, isRiseTime) => {
+    const timeType = isRiseTime ? 'riseTime' : 'sleepTime'
+
+    try {
+        const user = await User.findOne({ userID })
+        user[timeType].push(date)
+        await user.save()
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+module.exports.plusScore = async (userID, score) => {
+    try {
+        const user = await User.findOne({ userID })
+        user.score += score
+        await user.save()
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+module.exports.getTotalScore = async userID => {
+    try {
+        const user = await User.findOne({ userID })
+        return user.score
+    } catch (err) {
+        console.error(err)
+    }
+}

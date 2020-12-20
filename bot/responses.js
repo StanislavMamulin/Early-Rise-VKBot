@@ -1,47 +1,42 @@
-const api = require('node-vk-bot-api/lib/api')
-const { customAlphabet } = require('nanoid')
+const { userExists, createUser, addTime, plusScore, getTotalScore } = require('../db/db')
+const { getScore } = require('./score')
+const { getDateWithTopicOffset } = require('./time')
+const { sendMessage, getFirstName } = require('../vk/vkapi.js')
 
-const { userExists, createUser } = require('../db/db')
-
-const sendMessage = async (responseString, userID) => {
-    const randomID = customAlphabet('1234567890', 10)()
-
-    await api('messages.send', {
-        access_token: process.env.TOKEN,
-        user_id: userID,
-        random_id: randomID,
-        message: responseString,
-    })
-}
-
-const goodMorningResponse = async (firstName, userID) => {
-    const responseString = `Доброе утро, ${firstName}!`
-    sendMessage(responseString, userID)
-
+const greetingResponse = async (firstName, userID, date, greeting, isWakeUpTime) => {
     const user = await userExists(userID)
-    if (!user) {
-        await createUser({ userID, firstName })
-    }
-}
+    if (!user) await createUser({ userID, firstName })
 
-const goodNightResponse = (firstName, userID) => {
-    const responseString = `Спокойной ночи, ${firstName}!`
+    addTime(userID, date, isWakeUpTime)
+
+    const score = getScore(date, isWakeUpTime)
+    await plusScore(userID, score)
+
+    const totalScore = await getTotalScore(userID)
+    const responseString = `${greeting}, ${firstName}!\nВы получаете ${score} очков!\nОбщий баланс: ${totalScore}`
     sendMessage(responseString, userID)
 }
 
 module.exports.incomingMessage = async message => {
-    const { from_id: userID, text } = message
+    const {
+        from_id: userID,
+        text,
+        topic_id: topicID,
+        date,
+    } = message
 
-    const userVK = await api('users.get', {
-        access_token: process.env.TOKEN,
-        user_id: userID,
-    })
-    const { first_name: firstName } = userVK.response[0]
+    const topicDate = getDateWithTopicOffset(topicID, date)
+    const firstName = await getFirstName(userID)
 
+    let isWakeUpTime
     if (text.toLowerCase() === 'доброе утро') {
-        goodMorningResponse(firstName, userID)
+        isWakeUpTime = true
+        const greeting = 'Доброе утро'
+        greetingResponse(firstName, userID, topicDate, greeting, isWakeUpTime)
     }
     if (text.toLowerCase() === 'спокойной ночи') {
-        goodNightResponse(firstName, userID)
+        isWakeUpTime = false
+        const greeting = 'Спокойной ночи'
+        greetingResponse(firstName, userID, topicDate, greeting, isWakeUpTime)
     }
 }
