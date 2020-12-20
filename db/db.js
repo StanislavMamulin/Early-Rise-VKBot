@@ -26,6 +26,7 @@ module.exports.createUser = async props => {
         firstName,
         sleepNormHour = 0,
         sleepNormMinutes = 0,
+        score = 0,
     } = props
 
     const newUser = new User({
@@ -33,6 +34,7 @@ module.exports.createUser = async props => {
         firstName,
         sleepNormHour,
         sleepNormMinutes,
+        score,
     })
 
     newUser.save(err => {
@@ -78,5 +80,6 @@ module.exports.getTotalScore = async userID => {
         return user.score
     } catch (err) {
         console.error(err)
+        return 0
     }
 }

@@ -4,26 +4,44 @@ const { customAlphabet } = require('nanoid')
 const sendMessage = async (responseString, userID) => {
     const randomID = customAlphabet('1234567890', 10)()
 
-    await api('messages.send', {
-        access_token: process.env.TOKEN,
-        user_id: userID,
-        random_id: randomID,
-        message: responseString,
-    })
+    try {
+        await api('messages.send', {
+            access_token: process.env.TOKEN,
+            user_id: userID,
+            random_id: randomID,
+            message: responseString,
+        })
+    } catch (err) {
+        console.error(err)
+    }
 }
 
 const getFirstName = async userID => {
-    const userVK = await api('users.get', {
-        access_token: process.env.TOKEN,
-        user_id: userID,
-    })
+    try {
+        const userVK = await api('users.get', {
+            access_token: process.env.TOKEN,
+            user_id: userID,
+        })
 
-    const { first_name: firstName } = userVK.response[0]
+        const { first_name: firstName } = userVK.response[0]
 
-    return firstName
+        return firstName
+    } catch (err) {
+        console.error(err)
+        return 'Илон Маск'
+    }
+}
+
+const isJoin = joinEvent => {
+    const { join_type: joinType } = joinEvent
+    console.log(joinEvent)
+    console.log(joinType)
+
+    return joinType === 'approved'
 }
 
 module.exports = {
     sendMessage,
     getFirstName,
+    isJoin,
 }

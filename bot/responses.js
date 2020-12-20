@@ -1,12 +1,9 @@
 const { userExists, createUser, addTime, plusScore, getTotalScore } = require('../db/db')
 const { getScore } = require('./score')
 const { getDateWithTopicOffset } = require('./time')
-const { sendMessage, getFirstName } = require('../vk/vkapi.js')
+const { sendMessage, getFirstName, isJoin } = require('../vk/vkapi.js')
 
 const greetingResponse = async (firstName, userID, date, greeting, isWakeUpTime) => {
-    const user = await userExists(userID)
-    if (!user) await createUser({ userID, firstName })
-
     addTime(userID, date, isWakeUpTime)
 
     const score = getScore(date, isWakeUpTime)
@@ -39,4 +36,14 @@ module.exports.incomingMessage = async message => {
         const greeting = 'Спокойной ночи'
         greetingResponse(firstName, userID, topicDate, greeting, isWakeUpTime)
     }
+}
+
+module.exports.groupJoin = async joinEvent => {
+    if (!isJoin(joinEvent)) return
+
+    const { user_id: userID } = joinEvent
+    const firstName = await getFirstName(userID)
+
+    const user = await userExists(userID)
+    if (!user) await createUser({ userID, firstName })
 }

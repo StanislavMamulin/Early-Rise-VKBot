@@ -1,6 +1,6 @@
 const VKBot = require('node-vk-bot-api')
 const config = require('config')
-const { incomingMessage } = require('./bot/responses')
+const { incomingMessage, groupJoin } = require('./bot/responses')
 const { connect } = require('./db/db')
 
 const bot = new VKBot({
@@ -21,6 +21,14 @@ start()
 bot.event('board_post_new', ctx => {
     try {
         incomingMessage(ctx.message)
+    } catch (err) {
+        console.log('Error in post_new:\n', err)
+    }
+})
+
+bot.event('group_join', ctx => {
+    try {
+        groupJoin(ctx.message)
     } catch (err) {
         console.log('Error in post_new:\n', err)
     }
