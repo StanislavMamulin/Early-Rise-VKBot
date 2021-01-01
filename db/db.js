@@ -4,12 +4,15 @@ const { User } = require('./models/mainTable')
 
 module.exports.connect = async () => {
     try {
-        await mongoose.connect(config.get('db.connectString'),
+        const connectString = config.get('db.connectString')
+        await mongoose.connect(
+            connectString,
             {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
                 useCreateIndex: true,
-            })
+            }
+        )
     } catch (err) {
         console.log('Connect failed:', err)
     }
@@ -39,17 +42,24 @@ module.exports.createUser = async props => {
 
     newUser.save(err => {
         if (err) {
-            console.log(err)
-            return
+            console.error(err)
         }
-        console.log('User saved')
     })
 }
 
-module.exports.userExists = async userID => {
-    const user = await User.findOne({ userID })
+module.exports.isUserExists = async userID => {
+    try {
+        const user = await User.findOne(
+            { userID },
+            'firstName'
+        )
 
-    return !!user
+        return !!user
+    } catch (err) {
+        console.error(err)
+        
+        return false
+    }
 }
 
 module.exports.addTime = async (userID, date, isRiseTime) => {
@@ -78,6 +88,32 @@ module.exports.getTotalScore = async userID => {
     try {
         const user = await User.findOne({ userID })
         return user.score
+    } catch (err) {
+        console.error(err)
+        return 0
+    }
+}
+
+module.exports.getLastSleepTime = async userID => {
+    try {
+        const lastSleepTimeResponse = await User.aggregate([
+            {
+                $match: {
+                    userID
+                }
+            },
+            {
+                $project: {
+                    lastSleepTime: {
+                        $slice: ['$sleepTime', -1]
+                    }
+                }
+            }
+        ])
+
+        const { lastSleepTime } = lastSleepTimeResponse[0]
+
+        return lastSleepTime[0]
     } catch (err) {
         console.error(err)
         return 0
