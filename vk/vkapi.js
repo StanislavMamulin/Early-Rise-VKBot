@@ -16,7 +16,7 @@ const sendMessage = async (responseString, userID) => {
     }
 }
 
-const getFirstName = async userID => {
+const getVKFirstName = async userID => {
     try {
         const userVK = await api('users.get', {
             access_token: process.env.TOKEN,
@@ -42,6 +42,6 @@ const isJoin = joinEvent => {
 
 module.exports = {
     sendMessage,
-    getFirstName,
+    getVKFirstName,
     isJoin,
 }

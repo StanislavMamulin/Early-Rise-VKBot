@@ -1,5 +1,6 @@
 const timeZones = {
     46727234: 7, // NSK timezone UTC+7
+    46768668: 5, // YEKT UTC+5, Тюмень
 }
 
 module.exports.getDateWithTopicOffset = (topicID, date) => {

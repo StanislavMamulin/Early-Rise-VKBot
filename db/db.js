@@ -57,7 +57,6 @@ module.exports.isUserExists = async userID => {
         return !!user
     } catch (err) {
         console.error(err)
-        
         return false
     }
 }
@@ -98,9 +97,7 @@ module.exports.getLastSleepTime = async userID => {
     try {
         const lastSleepTimeResponse = await User.aggregate([
             {
-                $match: {
-                    userID
-                }
+                $match: { userID }
             },
             {
                 $project: {
@@ -117,5 +114,39 @@ module.exports.getLastSleepTime = async userID => {
     } catch (err) {
         console.error(err)
         return 0
+    }
+}
+
+module.exports.getLastWakeUpTime = async userID => {
+    try {
+        const lastWakeUpTimeResponse = await User.aggregate([
+            {
+                $match: { userID }
+            },
+            {
+                $project: {
+                    lastWakeUpTime: {
+                        $slice: ['$riseTime', -1]
+                    }
+                }
+            }
+        ])
+
+        const { lastWakeUpTime } = lastWakeUpTimeResponse[0]
+
+        return lastWakeUpTime[0]
+    } catch (err) {
+        console.error(err)
+        return 0
+    }
+}
+
+module.exports.getFirstName = async userID => {
+    try {
+        const user = User.findOne({ userID })
+        return user.firstName
+    } catch (err) {
+        console.error(err)
+        return 'Илон'
     }
 }

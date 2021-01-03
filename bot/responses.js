@@ -1,7 +1,7 @@
-const { isUserExists, createUser, addTime, plusScore, getTotalScore, getLastSleepTime } = require('../db/db')
+const { isUserExists, createUser, addTime, plusScore, getTotalScore, getLastSleepTime, getFirstName } = require('../db/db')
 const { getScore } = require('./score')
 const { getDateWithTopicOffset, timestampToHoursAndMinutes, hoursInMS } = require('./time')
-const { sendMessage, getFirstName, isJoin } = require('../vk/vkapi.js')
+const { sendMessage, getVKFirstName, isJoin } = require('../vk/vkapi.js')
 const { getResponseString } = require('./responseText')
 
 const calculateSleepTime = async (userID, wakeUpTime) => {
@@ -9,32 +9,46 @@ const calculateSleepTime = async (userID, wakeUpTime) => {
 
     const diffTime = wakeUpTime - lastSleepTime
 
-    // Проверка, что предыдущее время укладывания было не больше 10 часов назад
-    if (lastSleepTime === 0 || diffTime > hoursInMS(10)) {
+    // Проверка, что предыдущее время укладывания было не больше 12 часов назад
+    if (lastSleepTime === 0 || diffTime > hoursInMS(12)) {
         return 0
     }
 
     return diffTime
 }
 
-const greetingResponse = async (firstName, userID, date, greeting, isWakeUpTime) => {
-    addTime(userID, date, isWakeUpTime)
-
-    const score = getScore(date, isWakeUpTime)
-    await plusScore(userID, score)
-
+const getTotalSleepTimeText = async (isWakeUpTime, userID, date) => {
     let totalSleepTimeText = ''
+
     if (isWakeUpTime) {
         const totalSleepTime = await calculateSleepTime(userID, date)
+
         if (totalSleepTime > 0) {
             const [hours, minutes] = timestampToHoursAndMinutes(totalSleepTime)
             totalSleepTimeText = `\n\nВы спали ${hours} часов ${minutes} минут.`
         }
     }
 
+    return totalSleepTimeText
+}
+
+const writeGreetingDataToDB = async (userID, score, isWakeUpTime, date) => {
+    await plusScore(userID, score)
+    await addTime(userID, date, isWakeUpTime)
+}
+
+const greetingResponse = async (userID, date, greeting, isWakeUpTime, topicID) => {
+    const topicDate = getDateWithTopicOffset(topicID, date)
+    const score = getScore(topicDate, isWakeUpTime)
+    await writeGreetingDataToDB(userID, score, isWakeUpTime, topicDate)
+
+    const totalSleepTimeText = await getTotalSleepTimeText(isWakeUpTime, userID, topicDate)
     const totalScore = await getTotalScore(userID)
-    const responseParameters = { greeting, firstName, score, totalScore, totalSleepTimeText }
+    const firstName = await getFirstName(userID)
+
+    const responseParameters = { greeting, firstName, score, totalScore, totalSleepTimeText, topicID }
     const responseString = getResponseString(responseParameters)
+
     sendMessage(responseString, userID)
 }
 
@@ -46,20 +60,16 @@ module.exports.incomingMessage = async message => {
         date,
     } = message
 
-    const topicDate = getDateWithTopicOffset(topicID, date)
-    const firstName = await getFirstName(userID)
-
-    let isWakeUpTime
     const goodMorningGreeting = 'Доброе утро'
     if (text.trim().toLowerCase().includes(goodMorningGreeting.toLowerCase())) {
-        isWakeUpTime = true
-        greetingResponse(firstName, userID, topicDate, goodMorningGreeting, isWakeUpTime)
+        const isWakeUpTime = true
+        greetingResponse(userID, date, goodMorningGreeting, isWakeUpTime, topicID)
     }
 
     const goodNightGreeting = 'Спокойной ночи'
     if (text.trim().toLowerCase().includes(goodNightGreeting.toLowerCase())) {
-        isWakeUpTime = false
-        greetingResponse(firstName, userID, topicDate, goodNightGreeting, isWakeUpTime)
+        const isWakeUpTime = false
+        greetingResponse(userID, date, goodNightGreeting, isWakeUpTime, topicID)
     }
 }
 
@@ -69,10 +79,10 @@ module.exports.groupJoin = async joinEvent => {
     }
 
     const { user_id: userID } = joinEvent
-    const firstName = await getFirstName(userID)
 
     const userExists = await isUserExists(userID)
     if (!userExists) {
+        const firstName = await getVKFirstName(userID)
         await createUser({ userID, firstName })
     }
 }
