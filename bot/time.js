@@ -3,8 +3,11 @@ const timeZones = {
     46768668: 5, // YEKT UTC+5, Тюмень
 }
 
+// convert to JS time from VK message format (add ms)
+const convertToJSFormatFromVK = VKTimestamp => new Date(VKTimestamp * 1000)
+
 module.exports.getDateWithTopicOffset = (topicID, date) => {
-    const inputDate = new Date(date * 1000) // convert to JS time from VK message format (add ms)
+    const inputDate = convertToJSFormatFromVK(date)
     const hoursOffset = timeZones[topicID]
     const topicTime = inputDate.setHours(inputDate.getHours() + hoursOffset) // in ms
 
@@ -20,3 +23,12 @@ module.exports.timestampToHoursAndMinutes = timestamp => {
 }
 
 module.exports.hoursInMS = hours => hours * 60 * 60 * 1000
+
+module.exports.isCorrectFrequencyPosting = (VKPostTime, lastPostTime) => {
+    const postTime = convertToJSFormatFromVK(VKPostTime)
+    if (postTime - lastPostTime < this.hoursInMS(3)) {
+        return false
+    }
+
+    return true
+}

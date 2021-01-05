@@ -1,6 +1,21 @@
-const { isUserExists, createUser, addTime, plusScore, getTotalScore, getLastSleepTime, getFirstName } = require('../db/db')
+const {
+    isUserExists,
+    createUser,
+    addTime,
+    plusScore,
+    getTotalScore,
+    getLastSleepTime,
+    getFirstName,
+    getLastActionTime,
+    getLeaderboard,
+} = require('../db/db')
 const { getScore } = require('./score')
-const { getDateWithTopicOffset, timestampToHoursAndMinutes, hoursInMS } = require('./time')
+const {
+    getDateWithTopicOffset,
+    timestampToHoursAndMinutes,
+    hoursInMS,
+    isCorrectFrequencyPosting,
+} = require('./time')
 const { sendMessage, getVKFirstName, isJoin } = require('../vk/vkapi.js')
 const { getResponseString } = require('./responseText')
 
@@ -46,10 +61,22 @@ const greetingResponse = async (userID, date, greeting, isWakeUpTime, topicID) =
     const totalScore = await getTotalScore(userID)
     const firstName = await getFirstName(userID)
 
-    const responseParameters = { greeting, firstName, score, totalScore, totalSleepTimeText, topicID }
+    const responseParameters = {
+        greeting,
+        firstName,
+        score,
+        totalScore,
+        totalSleepTimeText,
+        topicID,
+    }
     const responseString = getResponseString(responseParameters)
 
     sendMessage(responseString, userID)
+}
+
+const checkFrequency = async (userID, postTime) => {
+    const lastPostTime = await getLastActionTime(userID)
+    return isCorrectFrequencyPosting(postTime, lastPostTime)
 }
 
 module.exports.incomingMessage = async message => {
@@ -62,16 +89,28 @@ module.exports.incomingMessage = async message => {
 
     const goodMorningGreeting = 'Доброе утро'
     if (text.trim().toLowerCase().includes(goodMorningGreeting.toLowerCase())) {
+        const correctFrequently = await checkFrequency(userID, date)
+        if (!correctFrequently) {
+            return
+        }
+
         const isWakeUpTime = true
         greetingResponse(userID, date, goodMorningGreeting, isWakeUpTime, topicID)
     }
 
     const goodNightGreeting = 'Спокойной ночи'
     if (text.trim().toLowerCase().includes(goodNightGreeting.toLowerCase())) {
+        const correctFrequently = await checkFrequency(userID, date)
+        if (!correctFrequently) {
+            return
+        }
+
         const isWakeUpTime = false
         greetingResponse(userID, date, goodNightGreeting, isWakeUpTime, topicID)
     }
 }
+
+module.exports.showLeaderboard = topCount => getLeaderboard(topCount)
 
 module.exports.groupJoin = async joinEvent => {
     if (!isJoin(joinEvent)) {

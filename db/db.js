@@ -67,6 +67,8 @@ module.exports.addTime = async (userID, date, isRiseTime) => {
     try {
         const user = await User.findOne({ userID })
         user[timeType].push(date)
+        user.lastActionTime = new Date()
+
         await user.save()
     } catch (err) {
         console.error(err)
@@ -87,6 +89,16 @@ module.exports.getTotalScore = async userID => {
     try {
         const user = await User.findOne({ userID })
         return user.score
+    } catch (err) {
+        console.error(err)
+        return 0
+    }
+}
+
+module.exports.getLastActionTime = async userID => {
+    try {
+        const user = await User.findOne({ userID })
+        return user.lastActionTime
     } catch (err) {
         console.error(err)
         return 0
@@ -143,10 +155,23 @@ module.exports.getLastWakeUpTime = async userID => {
 
 module.exports.getFirstName = async userID => {
     try {
-        const user = User.findOne({ userID })
+        const user = await User.findOne({ userID })
         return user.firstName
     } catch (err) {
         console.error(err)
         return 'Илон'
+    }
+}
+
+module.exports.getLeaderboard = async (topCount = 5) => {
+    try {
+        const result = await User.find({})
+            .sort('-score')
+            .limit(topCount)
+            .select('userID firstName score')
+        return result
+    } catch (err) {
+        console.error(err)
+        return []
     }
 }

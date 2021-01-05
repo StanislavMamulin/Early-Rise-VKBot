@@ -10,6 +10,7 @@ const earlyRiseSchema = new Schema({
     sleepTime: [Date],
     startDate: { type: Date, default: Date.now },
     sleepWellSeries: { type: Number, default: 0 },
+    lastActionTime: Date,
 })
 
 module.exports.User = model('User', earlyRiseSchema)
