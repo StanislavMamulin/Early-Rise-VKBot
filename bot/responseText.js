@@ -13,6 +13,15 @@ const getResponseString = responseParams => {
     return greetingAndScore + totalSleepTimeText + writeHere
 }
 
+const getStepTrackingResponseString = (firstName, score, totalScore, topicID) => {
+    const greetingAndScore = `${firstName}, за пройденные шаги Вы получаете ${scoreString(score)}!`
+    const totalScoreText = `\nОбщий баланс: ${scoreString(totalScore)}`
+    const link = topics[topicID].linkToTopic
+    const writeHere = `\n\n Ссылка на ветку для учёта шагов: ${link}`
+
+    return greetingAndScore + totalScoreText + writeHere
+}
+
 /*
     leaders: [{userID, firstName, score}]
 */
@@ -30,4 +39,5 @@ const getLeadersString = leaders => {
 module.exports = {
     getResponseString,
     getLeadersString,
+    getStepTrackingRescponseString: getStepTrackingResponseString,
 }

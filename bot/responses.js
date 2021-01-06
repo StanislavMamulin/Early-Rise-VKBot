@@ -95,7 +95,7 @@ module.exports.incomingMessage = async message => {
     } = message
 
     if (topics[topicID].type === topicType.STEP_TRACKING) {
-        stepProcessing(text)
+        stepProcessing(userID, text, topicID)
         return
     }
 
