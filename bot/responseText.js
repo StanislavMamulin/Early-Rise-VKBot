@@ -1,10 +1,5 @@
 const { sunEmoji, formattedScore } = require('../commonThings/textThings')
-
-const linkToTopic = {
-    46727234: 'https://vk.cc/bWmOzU', // NSK timezone UTC+7
-    46768668: 'https://vk.cc/bWM5uC', // YEKT UTC+5, Тюмень
-    46787838: 'https://vk.cc/bWQnb9', // Lviv, MSK, UTC+3
-}
+const { topics } = require('../vk/vkdata')
 
 const scoreString = score => `${formattedScore(score)} ${sunEmoji}`
 
@@ -12,7 +7,7 @@ const getResponseString = responseParams => {
     const { greeting, firstName, score, totalScore, totalSleepTimeText, topicID } = responseParams
 
     const greetingAndScore = `${greeting}, ${firstName}!\nВы получаете ${scoreString(score)}!\nОбщий баланс: ${scoreString(totalScore)}`
-    const link = linkToTopic[topicID]
+    const link = topics[topicID].linkToTopic
     const writeHere = `\n\n Ссылка для написания комментария в ветке своего часового пояса ${link}`
 
     return greetingAndScore + totalSleepTimeText + writeHere
