@@ -23,7 +23,7 @@ const hoursInMS = hours => hours * 60 * 60 * 1000
 
 const isCorrectFrequencyPosting = (VKPostTime, lastPostTime) => {
     const postTime = convertToJSFormatFromVK(VKPostTime)
-    if (postTime - lastPostTime < this.hoursInMS(3)) {
+    if (postTime - lastPostTime < hoursInMS(3)) {
         return false
     }
 
