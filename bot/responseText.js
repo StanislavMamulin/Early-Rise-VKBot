@@ -3,6 +3,7 @@ const { sunEmoji, formattedScore } = require('../commonThings/textThings')
 const linkToTopic = {
     46727234: 'https://vk.cc/bWmOzU', // NSK timezone UTC+7
     46768668: 'https://vk.cc/bWM5uC', // YEKT UTC+5, Тюмень
+    46787838: 'https://vk.cc/bWQnb9', // Lviv, MSK, UTC+3
 }
 
 const scoreString = score => `${formattedScore(score)} ${sunEmoji}`

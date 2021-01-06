@@ -1,6 +1,7 @@
 const timeZones = {
     46727234: 7, // NSK timezone UTC+7
     46768668: 5, // YEKT UTC+5, Тюмень
+    46787838: 3, // Lviv, MSK, UTC+3
 }
 
 // convert to JS time from VK message format (add ms)

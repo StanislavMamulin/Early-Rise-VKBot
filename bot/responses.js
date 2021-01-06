@@ -1,14 +1,19 @@
 const {
-    isUserExists,
-    createUser,
-    addTime,
     plusScore,
     getTotalScore,
-    getLastSleepTime,
-    getFirstName,
-    getLastActionTime,
     getLeaderboard,
-} = require('../db/db')
+} = require('../db/score')
+const {
+    addTime,
+    getLastSleepTime,
+    getLastActionTime,
+} = require('../db/time')
+const {
+    isUserExists,
+    createUser,
+    getFirstName,
+} = require('../db/user')
+
 const { getScore } = require('./score')
 const {
     getDateWithTopicOffset,
@@ -18,6 +23,8 @@ const {
 } = require('./time')
 const { sendMessage, getVKFirstName, isJoin } = require('../vk/vkapi.js')
 const { getResponseString } = require('./responseText')
+const { topicType, topics } = require('../vk/vkdata')
+const { stepProcessing } = require('./stepTracking')
 
 const calculateSleepTime = async (userID, wakeUpTime) => {
     const lastSleepTime = await getLastSleepTime(userID)
@@ -86,6 +93,11 @@ module.exports.incomingMessage = async message => {
         topic_id: topicID,
         date,
     } = message
+
+    if (topics[topicID].type === topicType.STEP_TRACKING) {
+        stepProcessing(text)
+        return
+    }
 
     const goodMorningGreeting = 'Доброе утро'
     if (text.trim().toLowerCase().includes(goodMorningGreeting.toLowerCase())) {
