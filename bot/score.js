@@ -2,7 +2,7 @@
 const SUPER_EVENING_START = 21
 const EARLY_EVENING_START = 22
 const EVENING_START = 23
-const EVENING_END = 0
+const EVENING_END = 24
 
 // Wake up hours range
 const SUPER_MORNING_START = 4

@@ -103,7 +103,7 @@ module.exports.incomingMessage = async message => {
     if (text.trim().toLowerCase().includes(goodMorningGreeting.toLowerCase())) {
         const correctFrequently = await checkFrequency(userID, date)
         if (!correctFrequently) {
-            // return
+            return
         }
 
         const isWakeUpTime = true
@@ -114,7 +114,7 @@ module.exports.incomingMessage = async message => {
     if (text.trim().toLowerCase().includes(goodNightGreeting.toLowerCase())) {
         const correctFrequently = await checkFrequency(userID, date)
         if (!correctFrequently) {
-            // return
+            return
         }
 
         const isWakeUpTime = false

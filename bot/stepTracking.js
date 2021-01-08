@@ -3,7 +3,14 @@ const { getFirstName } = require('../db/user')
 const { sendMessage } = require('../vk/vkapi.js')
 const { getStepTrackingRescponseString: getStepTrackingResponseString } = require('./responseText')
 
-const getStepNumberFrom = text => Number(text.match(/\d+/g).join(''))
+const getStepNumberFrom = text => {
+    const steps = text.match(/\d+/g)
+    if (!steps) {
+        return 0
+    }
+
+    return Number(steps.join(''))
+}
 
 const calculateScore = steps => Math.round(steps / 10)
 

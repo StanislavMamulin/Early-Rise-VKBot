@@ -4,6 +4,7 @@ const config = require('config')
 const { incomingMessage, groupJoin, showLeaderboard } = require('./bot/responses')
 const { connect } = require('./db/db')
 const { getLeadersString } = require('./bot/responseText')
+const { sendChart } = require('./chart/chart')
 
 const bot = new VKBot({
     token: process.env.TOKEN,
@@ -37,8 +38,13 @@ bot.event('group_join', ctx => {
 })
 
 const leadersString = async topCount => {
-    const topList = await showLeaderboard(topCount)
-    return getLeadersString(topList)
+    try {
+        const topList = await showLeaderboard(topCount)
+        return getLeadersString(topList)
+    } catch (err) {
+        console.error(err)
+        return ''
+    }
 }
 
 bot.command('Рейтинг', async ctx => {
@@ -52,6 +58,15 @@ bot.command('Рейтинг', async ctx => {
 bot.command('Общий рейтинг', async ctx => {
     const topCount = 20
     ctx.reply(await leadersString(topCount))
+})
+
+bot.command('Мой режим', async ctx => {
+    const { from_id: userID } = ctx.message
+    try {
+        await sendChart(userID)
+    } catch (err) {
+        console.error(err)
+    }
 })
 
 bot.startPolling(err => {
