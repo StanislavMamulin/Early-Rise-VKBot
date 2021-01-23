@@ -22,7 +22,7 @@ const {
     isCorrectFrequencyPosting,
 } = require('./time')
 const { sendMessage, getVKFirstName, isJoin } = require('../vk/vkapi.js')
-const { getResponseString } = require('./responseText')
+const { getResponseString, tooFrequentlyPostingMessage } = require('./responseText')
 const { topicType, topics } = require('../vk/vkdata')
 const { stepProcessing } = require('./stepTracking')
 
@@ -78,7 +78,7 @@ const greetingResponse = async (userID, date, greeting, isWakeUpTime, topicID) =
     }
     const responseString = getResponseString(responseParameters)
 
-    sendMessage(responseString, userID)
+    sendMessage(responseString, userID, topicID, firstName)
 }
 
 const checkFrequency = async (userID, postTime) => {
@@ -103,6 +103,7 @@ module.exports.incomingMessage = async message => {
     if (text.trim().toLowerCase().includes(goodMorningGreeting.toLowerCase())) {
         const correctFrequently = await checkFrequency(userID, date)
         if (!correctFrequently) {
+            // const message = tooFrequentlyPostingMessage()
             return
         }
 

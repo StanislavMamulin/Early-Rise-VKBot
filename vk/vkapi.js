@@ -3,8 +3,29 @@ const { customAlphabet } = require('nanoid')
 const fs = require('fs')
 const fetch = require('node-fetch')
 const FormData = require('form-data')
+const config = require('config')
 
-const sendMessage = async (responseString, userID) => {
+const { noSendPermission } = require('./errorTexts')
+
+const sendMessageToTopic = async (topicID, message) => {
+    const randomID = customAlphabet('1234567890', 10)()
+    const groupID = config.get('VK.groupID')
+    const token = config.get('VK.adminToken')
+
+    try {
+        await api('board.createComment', {
+            access_token: token,
+            group_id: groupID,
+            topic_id: topicID,
+            message,
+            from_group: 1,
+            guid: randomID,
+        })
+    } catch (err) {
+        console.error(err)
+    }
+}
+const sendMessage = async (responseString, userID, topicID, firstName) => {
     const randomID = customAlphabet('1234567890', 10)()
 
     try {
@@ -16,6 +37,13 @@ const sendMessage = async (responseString, userID) => {
         })
     } catch (err) {
         console.error(err)
+        const { error_code: errorCode } = err.response
+
+        // notify the user of the required action
+        if (errorCode === 901) {
+            const message = noSendPermission(firstName)
+            sendMessageToTopic(topicID, message)
+        }
     }
 }
 

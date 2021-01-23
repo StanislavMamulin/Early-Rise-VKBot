@@ -1,7 +1,7 @@
 const { plusScore, getTotalScore } = require('../db/score')
 const { getFirstName } = require('../db/user')
 const { sendMessage } = require('../vk/vkapi.js')
-const { getStepTrackingRescponseString: getStepTrackingResponseString } = require('./responseText')
+const { getStepTrackingResponseString } = require('./responseText')
 
 const getStepNumberFrom = text => {
     const steps = text.match(/\d+/g)

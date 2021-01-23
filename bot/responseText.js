@@ -36,8 +36,11 @@ const getLeadersString = leaders => {
     return leaderString
 }
 
+const tooFrequentlyPostingMessage = userName => `${userName}, интервал между сообщениями должен быть больше 3 часов`
+
 module.exports = {
     getResponseString,
     getLeadersString,
-    getStepTrackingRescponseString: getStepTrackingResponseString,
+    getStepTrackingResponseString,
+    tooFrequentlyPostingMessage,
 }
