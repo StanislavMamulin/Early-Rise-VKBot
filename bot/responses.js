@@ -3,11 +3,7 @@ const {
     getTotalScore,
     getLeaderboard,
 } = require('../db/score')
-const {
-    addTime,
-    getLastSleepTime,
-    getLastActionTime,
-} = require('../db/time')
+const { addTime } = require('../db/time')
 const {
     isUserExists,
     createUser,
@@ -17,42 +13,13 @@ const {
 const { getScore } = require('./score')
 const {
     getDateWithTopicOffset,
-    timestampToHoursAndMinutes,
-    hoursInMS,
-    isCorrectFrequencyPosting,
+    checkFrequency,
+    getTotalSleepTimeText,
 } = require('./time')
 const { sendMessage, getVKFirstName, isJoin } = require('../vk/vkapi.js')
-const { getResponseString, tooFrequentlyPostingMessage } = require('./responseText')
+const { getResponseString, getTooFrequentlyPostingMessage } = require('./responseText')
 const { topicType, topics } = require('../vk/vkdata')
 const { stepProcessing } = require('./stepTracking')
-
-const calculateSleepTime = async (userID, wakeUpTime) => {
-    const lastSleepTime = await getLastSleepTime(userID)
-
-    const diffTime = wakeUpTime - lastSleepTime
-
-    // Проверка, что предыдущее время укладывания было не больше 12 часов назад
-    if (lastSleepTime === 0 || diffTime > hoursInMS(12)) {
-        return 0
-    }
-
-    return diffTime
-}
-
-const getTotalSleepTimeText = async (isWakeUpTime, userID, date) => {
-    let totalSleepTimeText = ''
-
-    if (isWakeUpTime) {
-        const totalSleepTime = await calculateSleepTime(userID, date)
-
-        if (totalSleepTime > 0) {
-            const [hours, minutes] = timestampToHoursAndMinutes(totalSleepTime)
-            totalSleepTimeText = `\n\nВы спали ${hours} часов ${minutes} минут.`
-        }
-    }
-
-    return totalSleepTimeText
-}
 
 const writeGreetingDataToDB = async (userID, score, isWakeUpTime, date) => {
     await plusScore(userID, score)
@@ -81,11 +48,6 @@ const greetingResponse = async (userID, date, greeting, isWakeUpTime, topicID) =
     sendMessage(responseString, userID, topicID, firstName)
 }
 
-const checkFrequency = async (userID, postTime) => {
-    const lastPostTime = await getLastActionTime(userID)
-    return isCorrectFrequencyPosting(postTime, lastPostTime)
-}
-
 module.exports.incomingMessage = async message => {
     const {
         from_id: userID,
@@ -103,7 +65,7 @@ module.exports.incomingMessage = async message => {
     if (text.trim().toLowerCase().includes(goodMorningGreeting.toLowerCase())) {
         const correctFrequently = await checkFrequency(userID, date)
         if (!correctFrequently) {
-            // const message = tooFrequentlyPostingMessage()
+            // const message = getTooFrequentlyPostingMessage()
             return
         }
 

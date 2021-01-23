@@ -36,11 +36,14 @@ const getLeadersString = leaders => {
     return leaderString
 }
 
-const tooFrequentlyPostingMessage = userName => `${userName}, интервал между сообщениями должен быть больше 3 часов`
+const getTooFrequentlyPostingMessage = userName => `${userName}, интервал между сообщениями должен быть больше 3 часов`
+
+const getTotalSleepTimeMessage = (hours, minutes) => `\n\nВы спали ${hours} часов ${minutes} минут.`
 
 module.exports = {
     getResponseString,
     getLeadersString,
     getStepTrackingResponseString,
-    tooFrequentlyPostingMessage,
+    getTooFrequentlyPostingMessage,
+    getTotalSleepTimeMessage,
 }
