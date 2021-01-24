@@ -3,19 +3,22 @@ const {
     getTotalScore,
     getLeaderboard,
 } = require('../db/score')
-const { addTime } = require('../db/time')
+
 const {
     isUserExists,
     createUser,
     getFirstName,
 } = require('../db/user')
 
-const { getScore } = require('./score')
 const {
     getDateWithTopicOffset,
     checkFrequency,
     getTotalSleepTimeText,
 } = require('./time')
+
+const { getTypeOfGreeting, greetingTypeEnum } = require('./responseProcessing')
+const { addTime } = require('../db/time')
+const { getScore } = require('./score')
 const { sendMessage, getVKFirstName, isJoin } = require('../vk/vkapi.js')
 const { getResponseString, getTooFrequentlyPostingMessage } = require('./responseText')
 const { topicType, topics } = require('../vk/vkdata')
@@ -61,28 +64,19 @@ module.exports.incomingMessage = async message => {
         return
     }
 
-    const goodMorningGreeting = 'Доброе утро'
-    if (text.trim().toLowerCase().includes(goodMorningGreeting.toLowerCase())) {
-        const correctFrequently = await checkFrequency(userID, date)
-        if (!correctFrequently) {
-            // const message = getTooFrequentlyPostingMessage()
-            return
-        }
-
-        const isWakeUpTime = true
-        greetingResponse(userID, date, goodMorningGreeting, isWakeUpTime, topicID)
+    const correctFrequently = await checkFrequency(userID, date)
+    if (!correctFrequently) {
+        // const message = getTooFrequentlyPostingMessage()
+        return
     }
 
-    const goodNightGreeting = 'Спокойной ночи'
-    if (text.trim().toLowerCase().includes(goodNightGreeting.toLowerCase())) {
-        const correctFrequently = await checkFrequency(userID, date)
-        if (!correctFrequently) {
-            return
-        }
-
-        const isWakeUpTime = false
-        greetingResponse(userID, date, goodNightGreeting, isWakeUpTime, topicID)
+    const greeting = await getTypeOfGreeting(text)
+    if (greeting === greetingTypeEnum.NONE) {
+        return
     }
+
+    const isWakeUpTime = (greeting === greetingTypeEnum.WAKE)
+    greetingResponse(userID, date, greeting, isWakeUpTime, topicID)
 }
 
 module.exports.showLeaderboard = topCount => getLeaderboard(topCount)

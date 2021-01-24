@@ -3,3 +3,5 @@ startBot.sh
 startNode.sh
 config/
 .eslintrc.js
+ecosystem.config.js
+model.nlp

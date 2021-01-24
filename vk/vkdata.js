@@ -27,7 +27,13 @@ const topics = Object.freeze({
         linkToTopic: 'https://vk.cc/bWRVYo',
         readingName: 'Учёт шагов',
         type: topicType.STEP_TRACKING,
-    }
+    },
+    46992831: {
+        timeZoneOffset: 0,
+        linkToTopic: 'https://vk.com/topic-200936595_46992831',
+        readingName: 'Test topic',
+        type: topicType.SLEEP_TRACKING,
+    },
 })
 
 module.exports = {

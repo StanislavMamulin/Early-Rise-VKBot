@@ -15,6 +15,9 @@
   "author": "Stanislav Mamulin",
   "license": "ISC",
   "dependencies": {
+    "@nlpjs/basic": "^4.19.5",
+    "@nlpjs/lang-en": "^4.19.1",
+    "@nlpjs/lang-ru": "^4.19.1",
     "axios": "^0.21.1",
     "config": "^3.3.3",
     "express": "^4.17.1",

@@ -1,0 +1,11 @@
+{
+    "settings": {
+        "nlp": {
+            "corpora": [
+                "./corpus-ru.json",
+                "./corpus-en.json"
+            ]
+        }
+    },
+    "use": ["Basic", "LangRu", "LangEn"]
+}

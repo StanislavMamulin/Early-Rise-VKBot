@@ -1,0 +1,19 @@
+{
+	"name": "Early rise corpus",
+	"locale": "en-EN",
+	"data": [
+		{
+			"intent": "sleep",
+			"utterances": [
+				"Good night",
+				"Sleep well"
+			]
+		},
+		{
+			"intent": "wake",
+			"utterances": [
+				"Good morning"
+			]
+		}
+	]
+}
