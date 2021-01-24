@@ -2,15 +2,24 @@ const { sunEmoji, formattedScore } = require('../commonThings/textThings')
 const { topics } = require('../vk/vkdata')
 
 const scoreString = score => `${formattedScore(score)} ${sunEmoji}`
+const multipleEmoji = (emoji, number) => {
+    let emojiString = ''
+    for (let n = 0; n < number; n += 1) {
+        emojiString += ` ${emoji}`
+    }
+
+    return emojiString
+}
 
 const getResponseString = responseParams => {
-    const { greeting, firstName, score, totalScore, totalSleepTimeText, topicID } = responseParams
+    const { greeting, firstName, score, totalScore, totalSleepTimeText, topicID, quote } = responseParams
 
     const greetingAndScore = `${greeting}, ${firstName}!\nВы получаете ${scoreString(score)}!\nОбщий баланс: ${scoreString(totalScore)}`
     const link = topics[topicID].linkToTopic
-    const writeHere = `\n\n Ссылка для написания комментария в ветке своего часового пояса ${link}`
+    const writeHere = `\n\n Ссылка Вашего часового пояса ${link}`
+    const quoteString = `\n${multipleEmoji(sunEmoji, 8)}${quote}${multipleEmoji(sunEmoji, 8)}`
 
-    return greetingAndScore + totalSleepTimeText + writeHere
+    return greetingAndScore + totalSleepTimeText + writeHere + quoteString
 }
 
 const getStepTrackingResponseString = (firstName, score, totalScore, topicID) => {

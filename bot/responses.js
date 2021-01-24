@@ -16,6 +16,7 @@ const {
     getTotalSleepTimeText,
 } = require('./time')
 
+const { getQuote } = require('../networkSources/quotes')
 const { getTypeOfGreeting, greetingTypeEnum } = require('./responseProcessing')
 const { addTime } = require('../db/time')
 const { getScore } = require('./score')
@@ -37,6 +38,7 @@ const greetingResponse = async (userID, date, greeting, isWakeUpTime, topicID) =
     const totalSleepTimeText = await getTotalSleepTimeText(isWakeUpTime, userID, topicDate)
     const totalScore = await getTotalScore(userID)
     const firstName = await getFirstName(userID)
+    const quote = await getQuote()
 
     const responseParameters = {
         greeting,
@@ -45,6 +47,7 @@ const greetingResponse = async (userID, date, greeting, isWakeUpTime, topicID) =
         totalScore,
         totalSleepTimeText,
         topicID,
+        quote,
     }
     const responseString = getResponseString(responseParameters)
 
