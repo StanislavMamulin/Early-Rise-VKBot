@@ -72,16 +72,16 @@ const getOptions = () => ({
         }]
     },
     plugins: {
-        datalabels: {
-            anchor: 'start',
-            align: 'bottom',
-            color: '#fff',
-            backgroundColor: 'rgba(34, 139, 34, 0.6)',
-            borderColor: 'rgba(34, 139, 34, 1.0)',
-            borderWidth: 1,
-            borderRadius: 5,
-            formatter: getNormalTime
-        },
+        // datalabels: {
+        //     anchor: 'start',
+        //     align: 'bottom',
+        //     color: '#fff',
+        //     backgroundColor: 'rgba(34, 139, 34, 0.6)',
+        //     borderColor: 'rgba(34, 139, 34, 1.0)',
+        //     borderWidth: 1,
+        //     borderRadius: 5,
+        //     formatter: getNormalTime
+        // },
     }
 })
 
@@ -132,7 +132,7 @@ const createChart = async (userID, atPath, forDays) => {
 
 const sendChart = async userID => {
     const pathToChartSave = `/tmp/chart_${userID}.png`
-    const forDays = 7
+    const forDays = 30
 
     try {
         await createChart(userID, pathToChartSave, forDays)

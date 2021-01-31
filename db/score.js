@@ -33,8 +33,20 @@ const getLeaderboard = async (topCount = 5) => {
     }
 }
 
+const clearScore = async () => {
+    try {
+        const users = await User.find({})
+        users.forEach(user => {
+            user.score = 0
+        })
+    } catch (err) {
+        console.error(err)
+    }
+}
+
 module.exports = {
     plusScore,
     getTotalScore,
     getLeaderboard,
+    clearScore,
 }
