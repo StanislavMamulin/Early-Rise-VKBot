@@ -15,7 +15,7 @@ const bot = new VKBot({
 async function start() {
     try {
         await connect()
-        clearScoreSchedule()
+        // clearScoreSchedule()
     } catch (err) {
         console.log(err)
     }

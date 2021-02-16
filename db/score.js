@@ -38,6 +38,7 @@ const clearScore = async () => {
         const users = await User.find({})
         users.forEach(user => {
             user.score = 0
+            user.save()
         })
     } catch (err) {
         console.error(err)

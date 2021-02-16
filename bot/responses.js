@@ -62,6 +62,10 @@ module.exports.incomingMessage = async message => {
         date,
     } = message
 
+    if (topicID === 46992831) { // test topic
+        return
+    }
+
     if (topics[topicID].type === topicType.STEP_TRACKING) {
         stepProcessing(userID, text, topicID)
         return

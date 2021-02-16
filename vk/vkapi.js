@@ -4,6 +4,7 @@ const fs = require('fs')
 const fetch = require('node-fetch')
 const FormData = require('form-data')
 const config = require('config')
+const { waitMs } = require('../commonThings/helpers')
 
 const { noSendPermission } = require('./errorTexts')
 
@@ -25,6 +26,88 @@ const sendMessageToTopic = async (topicID, message) => {
         console.error(err)
     }
 }
+
+const getComments = async ({ topicID, quantity, offset = 0 }) => {
+    const groupID = config.get('VK.groupID')
+    const token = config.get('VK.adminToken')
+
+    try {
+        const comments = await api('board.getComments', {
+            access_token: token,
+            group_id: groupID,
+            topic_id: topicID,
+            count: quantity,
+            offset,
+        })
+
+        const { items, count } = comments.response
+        return {
+            count,
+            items,
+        }
+    } catch (err) {
+        console.error(err)
+        return {}
+    }
+}
+
+const deleteComments = async (comments, topicID) => {
+    const groupID = config.get('VK.groupID')
+
+    const promises = comments.map(async comment => {
+        const { id } = comment
+        console.log('id to delete:', id)
+        return api('board.deleteComment', {
+            access_token: process.env.TOKEN,
+            group_id: groupID,
+            topic_id: topicID,
+            comment_id: id,
+        })
+    })
+
+    try {
+        await Promise.all(promises)
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+const deleteAllComments = async (topicID, beforeDate = 0) => {
+    const MAX_PER_REQUEST = 20
+
+    try {
+        const { count } = await getComments({ topicID, quantity: 0 })
+        await waitMs(1000)
+        console.log('Total comments:', count)
+
+        if (count > 1) {
+            const steps = Math.ceil(count / MAX_PER_REQUEST)
+            console.log('steps', steps)
+            for (let step = 0; step < steps; step += 1) {
+                // get part of comments
+                // eslint-disable-next-line no-await-in-loop
+                const offset = (step === 0) ? 1 : step * MAX_PER_REQUEST
+                console.log('offset', offset)
+                const { items } = await getComments({ topicID, quantity: MAX_PER_REQUEST, offset })
+                let comments = items
+
+                if (beforeDate) {
+                    comments = items.filter(comment => comment.date < beforeDate)
+                }
+
+                if (comments.lenght !== 0) {
+                    // eslint-disable-next-line no-await-in-loop
+                    await deleteComments(comments, topicID)
+                    // eslint-disable-next-line no-await-in-loop
+                    await waitMs(1100)
+                }
+            }
+        }
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 const sendMessage = async (responseString, userID, topicID, firstName) => {
     const randomID = customAlphabet('1234567890', 10)()
 
@@ -152,4 +235,6 @@ module.exports = {
     getVKFirstName,
     isJoin,
     sendPhotoToVKUser,
+    getComments,
+    deleteAllComments
 }

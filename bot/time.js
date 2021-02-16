@@ -1,9 +1,11 @@
-const { topics } = require('../vk/vkdata')
+const { topics, topicType } = require('../vk/vkdata')
 const { getLastSleepTime, getLastActionTime } = require('../db/time')
 const { getTotalSleepTimeMessage } = require('./responseText')
+const { deleteAllComments } = require('../vk/vkapi')
 
 // convert to JS time from VK message format (add ms)
 const convertToJSFormatFromVK = VKTimestamp => new Date(VKTimestamp * 1000)
+const convertTimestampToVKFormat = ts => ts / 1000
 
 const getDateWithTopicOffset = (topicID, date) => {
     const inputDate = convertToJSFormatFromVK(date)
@@ -65,6 +67,29 @@ const getTotalSleepTimeText = async (isWakeUpTime, userID, date) => {
     return totalSleepTimeText
 }
 
+const getBeforeDate = () => '2021-02-01T00:00:00' // UTC, mockup
+
+const deleteMessagesInTheLastMonth = async () => {
+    const beforeDate = getBeforeDate()
+
+    const sleepTopics = Object.keys(topics)
+        .filter(id => topics[id].type === topicType.SLEEP_TRACKING)
+
+    const promise = sleepTopics.reduce((acc, topicID) => {
+        const newAcc = acc.then(() => {
+            const { timeZoneOffset } = topics[topicID]
+            const offsettedDate = new Date(`${beforeDate}+0${timeZoneOffset}:00`)
+            const needTime = convertTimestampToVKFormat(offsettedDate.getTime())
+            return deleteAllComments(topicID, needTime)
+        })
+        return newAcc
+    }, Promise.resolve())
+
+    promise.catch(err => {
+        console.error(err)
+    })
+}
+
 module.exports = {
     getDateWithTopicOffset,
     timestampToHoursAndMinutes,
@@ -72,4 +97,5 @@ module.exports = {
     isCorrectFrequencyPosting,
     getTotalSleepTimeText,
     checkFrequency,
+    deleteMessagesInTheLastMonth,
 }
