@@ -36,7 +36,21 @@ const topics = Object.freeze({
     },
 })
 
+const getStepTopicURL = () => {
+    let stepTrackingURL = ''
+
+    Object.keys(topics).forEach(topicID => {
+        const topic = topics[topicID]
+        if (topic.type === topicType.STEP_TRACKING) {
+            stepTrackingURL = topic.linkToTopic
+        }
+    })
+
+    return new URL(stepTrackingURL)
+}
+
 module.exports = {
     topicType,
     topics,
+    getStepTopicURL,
 }

@@ -3,9 +3,10 @@ const Markup = require('node-vk-bot-api/lib/markup')
 const config = require('config')
 const { incomingMessage, groupJoin, showLeaderboard } = require('./bot/responses')
 const { connect } = require('./db/db')
-const { getLeadersString } = require('./bot/responseText')
+const { getLeadersString, getMenuText } = require('./bot/responseText')
 const { sendChart } = require('./chart/chart')
 const { clearScoreSchedule } = require('./service/services')
+const { getStepTopicURL } = require('./vk/vkdata')
 
 const bot = new VKBot({
     token: process.env.TOKEN,
@@ -51,21 +52,49 @@ const leadersString = async topCount => {
 
 bot.command('Рейтинг', async ctx => {
     const topCount = 20
-    ctx.reply(await leadersString(topCount), null, Markup
-        .keyboard([
-            Markup.button('Общий рейтинг', 'positive')
-        ]))
+    try {
+        await ctx.reply(await leadersString(topCount))
+    } catch (err) {
+        console.error(err)
+    }
 })
 
 bot.command('Общий рейтинг', async ctx => {
     const topCount = 20
-    ctx.reply(await leadersString(topCount))
+    try {
+        await ctx.reply(await leadersString(topCount))
+    } catch (err) {
+        console.error(err)
+    }
 })
 
 bot.command('Мой режим', async ctx => {
     const { from_id: userID } = ctx.message
     try {
         await sendChart(userID)
+    } catch (err) {
+        console.error(err)
+    }
+})
+
+bot.command('Меню', async ctx => {
+    const stepTopicURL = getStepTopicURL()
+    try {
+        await ctx.reply(getMenuText(), null, Markup
+            .keyboard([
+                Markup.button('Рейтинг', 'primary'),
+                Markup.button('Мой режим', 'primary'),
+                Markup.button({
+                    action: {
+                        type: 'open_link',
+                        link: stepTopicURL,
+                        label: 'Запись шагов',
+                        payload: JSON.stringify({
+                            url: stepTopicURL,
+                        }),
+                    },
+                })
+            ], { columns: 2 }))
     } catch (err) {
         console.error(err)
     }

@@ -49,10 +49,16 @@ const getTooFrequentlyPostingMessage = userName => `${userName}, интерва�
 
 const getTotalSleepTimeMessage = (hours, minutes) => `\n\nВы спали ${hours} часов ${minutes} минут.`
 
+const getMenuText = () => `Возможные команды:
+    - Рейтинг - просмотр количества очков;
+    - Мой режим - просмотр графика укладываний и подъёмов за последний месяц.
+    `
+
 module.exports = {
     getResponseString,
     getLeadersString,
     getStepTrackingResponseString,
     getTooFrequentlyPostingMessage,
     getTotalSleepTimeMessage,
+    getMenuText,
 }
