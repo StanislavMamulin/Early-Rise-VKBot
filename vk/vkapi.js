@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const api = require('node-vk-bot-api/lib/api')
 const { customAlphabet } = require('nanoid')
 const fs = require('fs')
@@ -74,10 +75,11 @@ const deleteComments = async (comments, topicID) => {
 
 const deleteAllComments = async (topicID, beforeDate = 0) => {
     const MAX_PER_REQUEST = 20
+    const TIME_LIMIT_ON_REQUEST_TIME_MS = 1500
 
     try {
         const { count } = await getComments({ topicID, quantity: 0 })
-        await waitMs(1000)
+        await waitMs(TIME_LIMIT_ON_REQUEST_TIME_MS)
         console.log('Total comments:', count)
 
         if (count > 1) {
@@ -85,21 +87,19 @@ const deleteAllComments = async (topicID, beforeDate = 0) => {
             console.log('steps', steps)
             for (let step = 0; step < steps; step += 1) {
                 // get part of comments
-                const offset = (step === 0) ? 1 : step * MAX_PER_REQUEST
-                console.log('offset', offset)
-                // eslint-disable-next-line no-await-in-loop
+                const offset = 1 // (step === 0) ? 1 : step * MAX_PER_REQUEST
+                // console.log('offset', offset)
                 const { items } = await getComments({ topicID, quantity: MAX_PER_REQUEST, offset })
                 let comments = items
+                await waitMs(TIME_LIMIT_ON_REQUEST_TIME_MS)
 
                 if (beforeDate) {
                     comments = items.filter(comment => comment.date < beforeDate)
                 }
 
                 if (comments.lenght !== 0) {
-                    // eslint-disable-next-line no-await-in-loop
                     await deleteComments(comments, topicID)
-                    // eslint-disable-next-line no-await-in-loop
-                    await waitMs(1100)
+                    await waitMs(TIME_LIMIT_ON_REQUEST_TIME_MS)
                 }
             }
         }

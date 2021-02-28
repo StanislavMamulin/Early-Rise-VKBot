@@ -1,12 +1,13 @@
 const schedule = require('node-schedule')
 const { clearScore } = require('../db/score')
-// const {  } = require('../bot/time')
+const { deleteMessagesInTheLastMonth } = require('../vk/dataManager')
 
 const clearScoreSchedule = () => {
-    const firstDayOfMonth = '1 0 1 * *'
+    const firstDayOfEveryMonth = '1 0 1 * *'
 
-    schedule.scheduleJob(firstDayOfMonth, () => {
+    schedule.scheduleJob(firstDayOfEveryMonth, () => {
         clearScore()
+        deleteMessagesInTheLastMonth()
     })
 }
 
