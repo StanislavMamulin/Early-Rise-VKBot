@@ -6,7 +6,7 @@ const { connect } = require('./db/db')
 const { getLeadersString, getMenuText } = require('./bot/responseText')
 const { sendChart } = require('./chart/chart')
 const { clearScoreSchedule } = require('./service/services')
-const { getStepTopicURL } = require('./vk/vkdata')
+const { getStepTopicURL } = require('./vk/dataManager')
 
 const bot = new VKBot({
     token: process.env.TOKEN,
@@ -16,7 +16,7 @@ const bot = new VKBot({
 async function start() {
     try {
         await connect()
-        // clearScoreSchedule()
+        clearScoreSchedule()
     } catch (err) {
         console.log(err)
     }

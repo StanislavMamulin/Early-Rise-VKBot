@@ -1,11 +1,11 @@
 const schedule = require('node-schedule')
 const { clearScore } = require('../db/score')
+// const {  } = require('../bot/time')
 
 const clearScoreSchedule = () => {
-    const when = '10 0 1 * *'
-    // const when = new Date(2021, 0, 31, 21, 1)
+    const firstDayOfMonth = '1 0 1 * *'
 
-    schedule.scheduleJob(when, () => {
+    schedule.scheduleJob(firstDayOfMonth, () => {
         clearScore()
     })
 }

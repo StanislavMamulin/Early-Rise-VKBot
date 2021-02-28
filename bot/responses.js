@@ -22,7 +22,7 @@ const { addTime } = require('../db/time')
 const { getScore } = require('./score')
 const { sendMessage, getVKFirstName, isJoin } = require('../vk/vkapi.js')
 const { getResponseString, getTooFrequentlyPostingMessage } = require('./responseText')
-const { topicType, topics } = require('../vk/vkdata')
+const { isStepTopic } = require('../vk/dataManager')
 const { stepProcessing } = require('./stepTracking')
 
 const writeGreetingDataToDB = async (userID, score, isWakeUpTime, date) => {
@@ -66,7 +66,7 @@ module.exports.incomingMessage = async message => {
         return
     }
 
-    if (topics[topicID].type === topicType.STEP_TRACKING) {
+    if (isStepTopic(topicID)) {
         stepProcessing(userID, text, topicID)
         return
     }

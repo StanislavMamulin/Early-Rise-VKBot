@@ -85,9 +85,9 @@ const deleteAllComments = async (topicID, beforeDate = 0) => {
             console.log('steps', steps)
             for (let step = 0; step < steps; step += 1) {
                 // get part of comments
-                // eslint-disable-next-line no-await-in-loop
                 const offset = (step === 0) ? 1 : step * MAX_PER_REQUEST
                 console.log('offset', offset)
+                // eslint-disable-next-line no-await-in-loop
                 const { items } = await getComments({ topicID, quantity: MAX_PER_REQUEST, offset })
                 let comments = items
 
