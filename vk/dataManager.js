@@ -1,6 +1,6 @@
 const { topics, topicType } = require('./vkdata')
 const { deleteAllComments } = require('./vkapi')
-const { getBeginningOfThePreviousMonth } = require('../commonThings/time')
+const { getBeginningOfTheCurrentMonth } = require('../commonThings/time')
 
 const convertTimestampToVKFormat = ts => ts / 1000
 
@@ -27,7 +27,7 @@ const isStepTopic = topicID => topics[topicID].type === topicType.STEP_TRACKING
 const getTimeZoneOffset = topicID => topics[topicID].timeZoneOffset
 
 const deleteMessagesInTheLastMonth = async () => {
-    const beforeDate = getBeginningOfThePreviousMonth()
+    const beforeDate = getBeginningOfTheCurrentMonth()
     const sleepTopics = getSleepTopicIDs()
 
     const promise = sleepTopics.reduce((acc, topicID) => {

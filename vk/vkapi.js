@@ -57,7 +57,6 @@ const deleteComments = async (comments, topicID) => {
 
     const promises = comments.map(async comment => {
         const { id } = comment
-        console.log('id to delete:', id)
         return api('board.deleteComment', {
             access_token: process.env.TOKEN,
             group_id: groupID,
@@ -80,15 +79,13 @@ const deleteAllComments = async (topicID, beforeDate = 0) => {
     try {
         const { count } = await getComments({ topicID, quantity: 0 })
         await waitMs(TIME_LIMIT_ON_REQUEST_TIME_MS)
-        console.log('Total comments:', count)
 
         if (count > 1) {
             const steps = Math.ceil(count / MAX_PER_REQUEST)
-            console.log('steps', steps)
             for (let step = 0; step < steps; step += 1) {
                 // get part of comments
-                const offset = 1 // (step === 0) ? 1 : step * MAX_PER_REQUEST
-                // console.log('offset', offset)
+                const offset = 1
+
                 const { items } = await getComments({ topicID, quantity: MAX_PER_REQUEST, offset })
                 let comments = items
                 await waitMs(TIME_LIMIT_ON_REQUEST_TIME_MS)
@@ -99,7 +96,7 @@ const deleteAllComments = async (topicID, beforeDate = 0) => {
 
                 if (comments.lenght !== 0) {
                     await deleteComments(comments, topicID)
-                    await waitMs(TIME_LIMIT_ON_REQUEST_TIME_MS)
+                    await waitMs(TIME_LIMIT_ON_REQUEST_TIME_MS * 10)
                 }
             }
         }
