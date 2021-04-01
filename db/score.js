@@ -22,7 +22,7 @@ const getTotalScore = async userID => {
 
 const getLeaderboard = async (topCount = 5) => {
     try {
-        const result = await User.find({})
+        const result = await User.find({ score: { $gt: 0 } })
             .sort('-score')
             .limit(topCount)
             .select('userID firstName score')
