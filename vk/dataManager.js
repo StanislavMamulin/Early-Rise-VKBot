@@ -18,7 +18,7 @@ const getStepTopicURL = () => {
 }
 
 const getSleepTopicIDs = () => Object.keys(topics)
-    .filter(id => topics[id].type === topicType.SLEEP_TRACKING)
+// .filter(id => topics[id].type === topicType.SLEEP_TRACKING)
 
 const getTopicLink = topicID => topics[topicID].linkToTopic
 
