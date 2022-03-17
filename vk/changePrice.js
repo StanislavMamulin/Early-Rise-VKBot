@@ -2,7 +2,7 @@
 
 
 /* eslint-disable no-await-in-loop */
-const token = '38805f542e694c5744c1fdcbf0f899e5731557672829351aadf5dd492dd4b2b97899e401cc21c8ea8d7c7'
+const token = ''
 const owner_id = '-134366705'
 
 const api = require('node-vk-bot-api/lib/api')
