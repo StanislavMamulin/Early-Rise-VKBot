@@ -1,6 +1,4 @@
 /* eslint-disable no-mixed-operators */
-
-
 /* eslint-disable no-await-in-loop */
 const token = ''
 const owner_id = '-134366705'
@@ -35,20 +33,21 @@ const changeSKUForGoods = async (id, sku) => {
 const changePrices = async items => {
     const filterTrafarets = /^Трафарет/i
 
-    items.forEach(async item => {
+    for (const item of items) {
         const { id, price, title } = item
 
         if (!filterTrafarets.test(title)) {
-            const priceAmount = price.amount / 100
+            const priceAmount = Math.floor(price.amount / 100)
             console.log(title)
-            console.log(`Old price: ${priceAmount}`)
             // calc newPrice
-            const newPrice = Math.floor(priceAmount * 1.15 / 10) * 10 + 9
-            console.log(`New price: ${newPrice}`)
+            const changeCoefficient = 1.36
+            const newPrice = Math.floor(priceAmount * changeCoefficient / 10) * 10 + 9
+
+            console.log(`Old price: ${priceAmount}, New price: ${newPrice}`)
 
             await changePriceForGoods(id, newPrice)
         }
-    })
+    }
 }
 
 const fillSKU = async items => {
@@ -73,10 +72,10 @@ const fillSKU = async items => {
 const processGoods = async () => {
     const MAX_PER_REQUEST = 5
     const TIME_LIMIT_ON_REQUEST_TIME_MS = 1500
-    const INIT_OFFSET = 200
+    const INIT_OFFSET = 0
 
     try {
-        // 0. get count
+        // 0. get number of goods
         const goodsCount = await api('market.get', {
             access_token: token,
             owner_id,
@@ -84,11 +83,10 @@ const processGoods = async () => {
         })
 
         const { count } = goodsCount.response
-        // const count = 22
+
         await waitMs(TIME_LIMIT_ON_REQUEST_TIME_MS)
 
         for (let offset = INIT_OFFSET; offset < count; offset += MAX_PER_REQUEST) {
-            console.log(`-------------------- Offset: ${offset} ======================`)
             // get part of goods
             const goodsPart = await api('market.get', {
                 access_token: token,
@@ -103,9 +101,9 @@ const processGoods = async () => {
             const { items } = goodsPart.response
 
             // 1.0 change price of goods
-            // changePrices(items)
+            // await changePrices(items)
             // 1.1 fill SKU
-            await fillSKU(items)
+            // await fillSKU(items)
 
             await waitMs(TIME_LIMIT_ON_REQUEST_TIME_MS)
         }
