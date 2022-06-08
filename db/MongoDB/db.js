@@ -3,7 +3,7 @@ const config = require('config')
 
 const connect = async () => {
     try {
-        const connectString = config.get('db.connectString')
+        const connectString = config.get('db.mongoConfig.connectString')
         await mongoose.connect(
             connectString,
             {

@@ -36,16 +36,19 @@ const changePrices = async items => {
     for (const item of items) {
         const { id, price, title } = item
 
+        console.log(title)
         if (!filterTrafarets.test(title)) {
-            const priceAmount = Math.floor(price.amount / 100)
-            console.log(title)
+            const priceAmount = Math.floor(price.amount / 100) // convert from VK format 
+
             // calc newPrice
-            const changeCoefficient = 1.36
+            const changeCoefficient = 0.76
             const newPrice = Math.floor(priceAmount * changeCoefficient / 10) * 10 + 9
 
             console.log(`Old price: ${priceAmount}, New price: ${newPrice}`)
 
             await changePriceForGoods(id, newPrice)
+        } else {
+            console.log('-- Цена не изменена --\n')
         }
     }
 }

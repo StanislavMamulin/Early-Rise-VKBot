@@ -8,8 +8,6 @@ const { sendChart } = require('./chart/chart')
 const { clearScoreSchedule } = require('./service/services')
 const { getStepTopicURL } = require('./vk/dataManager')
 
-const { processGoods } = require('./vk/changePrice')
-
 const bot = new VKBot({
     token: process.env.TOKEN,
     group_id: config.get('VK.groupID'),
@@ -25,14 +23,6 @@ async function start() {
 }
 
 start()
-
-// bot.command('Z34rfbw', async () => {
-//     try {
-//         await processGoods()
-//     } catch (err) {
-//         console.error(err)
-//     }
-// })
 
 bot.event('board_post_new', ctx => {
     try {
