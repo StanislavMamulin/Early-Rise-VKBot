@@ -1,4 +1,4 @@
-const { User } = require('./models/mainTable')
+const { getModel } = require('./models/EarlyBird')
 
 const addTime = async (userID, date, isRiseTime) => {
     const timeType = isRiseTime ? 'riseTime' : 'sleepTime'

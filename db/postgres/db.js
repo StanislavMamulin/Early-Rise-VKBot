@@ -1,4 +1,4 @@
-const { getModel } = require('./models/mainTable')
+const { getModel } = require('./models/EarlyBird')
 
 let sequelize
 

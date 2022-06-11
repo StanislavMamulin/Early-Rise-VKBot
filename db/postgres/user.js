@@ -1,4 +1,4 @@
-const { EarlyBird } = require('./models/mainTable')
+const { getModel } = require('./models/EarlyBird')
 
 export const createUser = async props => {
     const {

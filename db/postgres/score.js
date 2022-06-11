@@ -1,6 +1,6 @@
 const { Op } = require('sequelize')
 
-const { getModel } = require('./models/mainTable')
+const { getModel } = require('./models/EarlyBird')
 
 /**
  * Increment user score
