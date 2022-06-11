@@ -1,27 +1,19 @@
-const mongoose = require('mongoose')
 const config = require('config')
+const { connectToDB, closeConnectionToDB } = require('./postgres/db')
 
-const connect = async () => {
+export const connect = async () => {
     try {
-        const connectString = config.get('db.connectString')
-        await mongoose.connect(
-            connectString,
-            {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-                useCreateIndex: true,
-            }
-        )
+        const connectOptions = config.get('db.pgConfig')
+        await connectToDB(connectOptions)
     } catch (err) {
-        console.log('Connect failed:', err)
+        console.error('Connect failed:', err)
     }
-
-    const db = mongoose.connection
-    db.on('error', err => {
-        console.log('Connection error', err)
-    })
 }
 
-module.exports = {
-    connect,
+export const disconnect = async () => {
+    try {
+        await closeConnectionToDB()
+    } catch (err) {
+        console.error('Disconnect failed', err)
+    }
 }
