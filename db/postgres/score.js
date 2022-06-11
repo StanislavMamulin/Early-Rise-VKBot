@@ -1,6 +1,6 @@
 const { Op } = require('sequelize')
 
-const { EarlyBird } = require('./models/mainTable')
+const { getModel } = require('./models/mainTable')
 
 /**
  * Increment user score
@@ -9,7 +9,8 @@ const { EarlyBird } = require('./models/mainTable')
  */
 export const plusScore = async (userID, score) => {
     try {
-        const user = await EarlyBird.findOne({ where: { userID } })
+        const earlyBird = getModel()
+        const user = await earlyBird.findOne({ where: { userID } })
         await user.increment('score', { by: score })
     } catch (err) {
         console.error(err)
@@ -23,7 +24,8 @@ export const plusScore = async (userID, score) => {
  */
 export const getTotalScore = async userID => {
     try {
-        const user = await EarlyBird.findOne({ where: { userID }})
+        const earlyBird = getModel()
+        const user = await earlyBird.findOne({ where: { userID }})
         return user.score
     } catch (err) {
         console.error(err)
@@ -38,7 +40,8 @@ export const getTotalScore = async userID => {
 */
 export const getLeaderboard = async (topCount = 5) => {
     try {
-        const result = await EarlyBird.findAll({
+        const earlyBird = getModel()
+        const result = await earlyBird.findAll({
             attributes: ['userID', 'firstName', 'score'],
             where: { score: { [Op.gt]: 0, } },
             limit: topCount,
@@ -56,7 +59,8 @@ export const getLeaderboard = async (topCount = 5) => {
  */
 export const clearScore = async () => {
     try {
-        await EarlyBird.update({ score: 0 }, { where: {} })
+        const earlyBird = getModel()
+        await earlyBird.update({ score: 0 }, { where: {} })
     } catch (err) {
         console.error(err)
     }
