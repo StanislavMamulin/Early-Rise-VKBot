@@ -7,7 +7,7 @@ const { getModel } = require('./models/EarlyBird')
  * @param {number} userID
  * @param {number} score
  */
-export const plusScore = async (userID, score) => {
+export const addScore = async (userID, score) => {
     try {
         const earlyBird = getModel()
         const user = await earlyBird.findOne({ where: { userID } })
@@ -22,7 +22,7 @@ export const plusScore = async (userID, score) => {
  * @param {number} userID 
  * @returns {number} User current score
  */
-export const getTotalScore = async userID => {
+export const getOverallScore = async userID => {
     try {
         const earlyBird = getModel()
         const user = await earlyBird.findOne({ where: { userID }})
@@ -35,10 +35,10 @@ export const getTotalScore = async userID => {
 
 /** 
  * Get leaders
- * @param {number} topCount - How many leaders to return
+ * @param {number} [topCount=5] - How many leaders to return. Deafult value 5.
  * @returns {Array} Each elemnt of the array is object {userID, firstName, score}
 */
-export const getLeaderboard = async (topCount = 5) => {
+export const getLeaders = async (topCount = 5) => {
     try {
         const earlyBird = getModel()
         const result = await earlyBird.findAll({
@@ -57,7 +57,7 @@ export const getLeaderboard = async (topCount = 5) => {
 /**
  * Reset all users score
  */
-export const clearScore = async () => {
+export const resetAllUsersScore = async () => {
     try {
         const earlyBird = getModel()
         await earlyBird.update({ score: 0 }, { where: {} })
