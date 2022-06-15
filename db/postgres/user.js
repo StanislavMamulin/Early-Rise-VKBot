@@ -1,40 +1,75 @@
 const { getModel } = require('./models/EarlyBird')
 
-export const createUser = async props => {
+/**
+ * Get User info from database
+ * @param {number} userID - user id
+ * @param {string} attribute - select only this attribute
+ * @returns - Information about the found user
+ */
+ const getUserByIDAndAttribute = async (userID, attribute) => {
+    const earlyBird = getModel()
+    return await earlyBird.findOne({ 
+        where: { userID },
+        attributes: [attribute],
+    })
+}
+
+/**
+ * Create a new user
+ * @param {object} userinfo - Info about the created user
+ * @param {number} userinfo.userID - User ID
+ * @param {string} userinfo.firstName - User first name
+ * @param {number} [userinfo.sleepNormHour=0] - Sleep norm in hours
+ * @param {number} [userinfo.sleepNormMinutes=0] - Sleep norm in minutes
+ * @param {number} [userinfo.score=0] - Starting score
+ */
+export const createEarlyBirdUser = async userinfo => {
     const {
         userID,
         firstName,
         sleepNormHour = 0,
         sleepNormMinutes = 0,
         score = 0,
-    } = props
+    } = userinfo
 
     try {
-      await EarlyBird.create({
-        userID,
-        firstName,
-        sleepNormHour,
-        sleepNormMinutes,
-        score,
-      })
+        const earlyBird = getModel()
+        await earlyBird.create({
+            userID,
+            firstName,
+            sleepNormHour,
+            sleepNormMinutes,
+            score,
+        })
+    } catch (err) {
+        console.error(err)
+    }
+}
+
+/**
+ * Check if user exists
+ * @param {number} userID 
+ * @returns {boolean} - User exists or not
+ */
+export const isUserPresent = async userID => {
+    try {
+        const user = await getUserByIDAndAttribute(userID, 'firstName')
+        return Boolean(user)
     } catch (err) {
         console.error(err)
         return false
     }
 }
 
-export const isUserExists = async userID => {
+/**
+ * Get user first name
+ * @param {number} userID 
+ * @returns {string} - User first name
+ */
+export const getUserFirstName = async userID => {
     try {
-      
-    } catch (err) {
-        console.error(err)
-        return false
-    }
-}
-
-export const getFirstName = async userID => {
-    try {
-       
+        const user = await getUserByIDAndAttribute(userID, 'firstName')
+        return user.firstName
     } catch (err) {
         console.error(err)
         return ''
