@@ -5,13 +5,13 @@ let sequelize
 
 /**
  * Connect to database
- * @param {Object} connectOptions - database connection options
+ * @param {object} connectOptions - database connection options
  * @param {string} connectOptions.username
  * @param {string} connectOptions.password
  * @param {string} connectOptions.host
  * @param {string} connectOptions.database - database name
  * @param {number} connectOptions.port
- * @returns {Object} Sequelize instance (a connection to database)
+ * @returns {object} Sequelize instance (a connection to database)
  */
 const connect = ({
     username,
@@ -30,7 +30,7 @@ const connect = ({
 
 /**
  * Connect to database
- * @param {Object} connectOptions - database connection options
+ * @param {object} connectOptions - database connection options
  * @param {string} connectOptions.username
  * @param {string} connectOptions.password
  * @param {string} connectOptions.host
