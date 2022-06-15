@@ -1,65 +1,94 @@
-const { User } = require('./models/mainTable')
+const {
+    addTimeOfEvent,
+    getLatestActionTime,
+    getLatestBedtime,
+    getLatestBedtimeForDays,
+    getLastWakingTime,
+    getLastWakingTimeForDays,
+} = require('./postgres/time')
 
-const addTime = async (userID, date, isRiseTime) => {
-    const timeType = isRiseTime ? 'riseTime' : 'sleepTime'
-
+/**
+ * Add a wake up or bedtime date
+ * @param {number} userID 
+ * @param {Date} date 
+ * @param {boolean} isRiseTime 
+ */
+export const addTime = async (userID, date, isRiseTime) => {
     try {
-
+        await addTimeOfEvent(userID, date, isRiseTime)
     } catch (err) {
         console.error(err)
     }
 }
 
-const getLastActionTime = async userID => {
+/**
+ * Get a last action time for user
+ * @param {number} userID 
+ * @returns 
+ */
+export const getLastActionTime = async userID => {
     try {
-
+        return await getLatestActionTime(userID)
     } catch (err) {
         console.error(err)
         return 0
     }
 }
 
-const getLastSleepTime = async userID => {
+/**
+ * Get latest bedtime
+ * @param {number} userID 
+ * @returns 
+ */
+export const getLastSleepTime = async userID => {
     try {
-
+        return await getLatestBedtime(userID)
     } catch (err) {
         console.error(err)
         return 0
     }
 }
 
-const getLastSleepTimeForDays = async (userID, days) => {
+/**
+ * Get bedtime for several days
+ * @param {number} userID 
+ * @param {number} days 
+ * @returns 
+ */
+export const getLastSleepTimeForDays = async (userID, days) => {
     try {
-
+        return await getLatestBedtimeForDays(userID, days)
     } catch (err) {
         console.error(err)
         return []
     }
 }
 
-const getLastWakeUpTime = async userID => {
+/**
+ * Get latest wake up time
+ * @param {number} userID 
+ * @returns 
+ */
+export const getLastWakeUpTime = async userID => {
     try {
-
+        return await getLastWakingTime(userID)
     } catch (err) {
         console.error(err)
         return 0
     }
 }
 
-const getLastWakeUpTimeForDays = async (userID, days) => {
+/**
+ * Get wake up time for several days
+ * @param {number} userID 
+ * @param {number} days 
+ * @returns 
+ */
+export const getLastWakeUpTimeForDays = async (userID, days) => {
     try {
-
+        return await getLastWakingTimeForDays(userID, days)
     } catch (err) {
         console.error(err)
         return []
     }
-}
-
-module.exports = {
-    addTime,
-    getLastActionTime,
-    getLastSleepTime,
-    getLastSleepTimeForDays,
-    getLastWakeUpTime,
-    getLastWakeUpTimeForDays,
 }

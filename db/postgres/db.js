@@ -1,3 +1,4 @@
+const { Sequelize } = require('sequelize')
 const { getModel } = require('./models/EarlyBird')
 
 let sequelize
