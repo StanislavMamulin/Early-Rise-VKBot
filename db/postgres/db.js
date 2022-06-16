@@ -53,8 +53,12 @@ export const connectToDB = async (connectOptions) => {
 }
 
 /**
- * Disconnect from database
+ * Disconnect from the database
  */
 export const closeConnectionToDB = async () => {
-    await sequelize.close()
+    try {
+        await sequelize.close()
+    } catch (err) {
+        console.error('Failed to disconnect from the DB:', err)
+    }
 }

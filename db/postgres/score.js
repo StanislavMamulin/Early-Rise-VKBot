@@ -20,7 +20,7 @@ export const addScore = async (userID, score) => {
 /**
  * Get User score
  * @param {number} userID 
- * @returns {number} User current score
+ * @returns {Promise<number>} User current score
  */
 export const getOverallScore = async userID => {
     try {
@@ -36,7 +36,7 @@ export const getOverallScore = async userID => {
 /** 
  * Get leaders
  * @param {number} [topCount=5] - How many leaders to return. Deafult value 5.
- * @returns {Array} Each elemnt of the array is object {userID, firstName, score}
+ * @returns {Promise<Array>} Each element of the array is object {userID, firstName, score}
 */
 export const getLeaders = async (topCount = 5) => {
     try {

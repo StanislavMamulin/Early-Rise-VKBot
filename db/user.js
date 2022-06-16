@@ -24,7 +24,7 @@ export const createUser = async userinfo => {
 /**
  * Check if user exists
  * @param {number} userID 
- * @returns {boolean} - User exists or not
+ * @returns {Promise<boolean>} User exists or not
  */
 export const isUserExists = async userID => {
     try {
@@ -38,7 +38,7 @@ export const isUserExists = async userID => {
 /**
  * Get user first name
  * @param {number} userID 
- * @returns {string} - User first name
+ * @returns {Promise<string>} User first name
  */
 export const getFirstName = async userID => {
     try {

@@ -10,8 +10,8 @@ const {
 /**
  * Add a wake up or bedtime date
  * @param {number} userID 
- * @param {Date} date 
- * @param {boolean} isRiseTime 
+ * @param {Date} date - Event date
+ * @param {boolean} isRiseTime - Wake up time or sleep time
  */
 export const addTime = async (userID, date, isRiseTime) => {
     try {
@@ -24,7 +24,7 @@ export const addTime = async (userID, date, isRiseTime) => {
 /**
  * Get a last action time for user
  * @param {number} userID 
- * @returns 
+ * @returns {Promise<number>} Last action time 
  */
 export const getLastActionTime = async userID => {
     try {
@@ -38,7 +38,7 @@ export const getLastActionTime = async userID => {
 /**
  * Get latest bedtime
  * @param {number} userID 
- * @returns 
+ * @returns {Promise<number>} Latest bedtime
  */
 export const getLastSleepTime = async userID => {
     try {
@@ -52,8 +52,8 @@ export const getLastSleepTime = async userID => {
 /**
  * Get bedtime for several days
  * @param {number} userID 
- * @param {number} days 
- * @returns 
+ * @param {number} days - For what period the data is needed
+ * @returns {Promise<Array>} Bedtime for several days
  */
 export const getLastSleepTimeForDays = async (userID, days) => {
     try {
@@ -67,7 +67,7 @@ export const getLastSleepTimeForDays = async (userID, days) => {
 /**
  * Get latest wake up time
  * @param {number} userID 
- * @returns 
+ * @returns {Promise<number>} Latest wake up time
  */
 export const getLastWakeUpTime = async userID => {
     try {
@@ -81,8 +81,8 @@ export const getLastWakeUpTime = async userID => {
 /**
  * Get wake up time for several days
  * @param {number} userID 
- * @param {number} days 
- * @returns 
+ * @param {number} days - For what period the data is needed
+ * @returns {Promise<Array>} Wake up time for several days
  */
 export const getLastWakeUpTimeForDays = async (userID, days) => {
     try {

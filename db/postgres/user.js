@@ -2,9 +2,9 @@ const { getModel } = require('./models/EarlyBird')
 
 /**
  * Get User info from database
- * @param {number} userID - user id
+ * @param {number} userID
  * @param {string} attribute - select only this attribute
- * @returns - Information about the found user
+ * @returns {Promise<object>} Information about the found user
  */
  const getUserByIDAndAttribute = async (userID, attribute) => {
     const earlyBird = getModel()
@@ -49,7 +49,7 @@ export const createEarlyBirdUser = async userinfo => {
 /**
  * Check if user exists
  * @param {number} userID 
- * @returns {boolean} - User exists or not
+ * @returns {Promise<boolean>} User exists or not
  */
 export const isUserPresent = async userID => {
     try {
@@ -64,7 +64,7 @@ export const isUserPresent = async userID => {
 /**
  * Get user first name
  * @param {number} userID 
- * @returns {string} - User first name
+ * @returns {Promise<string>} User first name
  */
 export const getUserFirstName = async userID => {
     try {

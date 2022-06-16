@@ -4,7 +4,7 @@ const { getModel } = require('./models/EarlyBird')
  * Get User info from database
  * @param {number} userID - user id
  * @param {string} attribute - select only this attribute
- * @returns Found User info
+ * @returns {Promise<object>} Found User info
  */
 const getUserByIDAndAttribute = async (userID, attribute) => {
     const earlyBird = getModel()
@@ -17,8 +17,8 @@ const getUserByIDAndAttribute = async (userID, attribute) => {
 /**
  * Add a wake up or bedtime date
  * @param {number} userID 
- * @param {Date} date 
- * @param {boolean} isRiseTime 
+ * @param {Date} date - Event date
+ * @param {boolean} isRiseTime - Wake up time or sleep time
  */
 export const addTimeOfEvent = async (userID, date, isRiseTime) => {
     const timeType = isRiseTime ? 'riseTime' : 'sleepTime'
@@ -37,7 +37,7 @@ export const addTimeOfEvent = async (userID, date, isRiseTime) => {
 /**
  * Get a last action time for user
  * @param {number} userID 
- * @returns 
+ * @returns {Promise<number>} Last action time 
  */
 export const getLatestActionTime = async userID => {
     try {
@@ -52,7 +52,7 @@ export const getLatestActionTime = async userID => {
 /**
  * Get latest bedtime
  * @param {number} userID 
- * @returns 
+ * @returns {Promise<number>} Latest bedtime
  */
 export const getLatestBedtime = async userID => {
     try {
@@ -67,8 +67,8 @@ export const getLatestBedtime = async userID => {
 /**
  * Get bedtime for several days
  * @param {number} userID 
- * @param {number} days 
- * @returns 
+ * @param {number} days - For what period the data is needed
+ * @returns {Promise<Array>} Bedtime for several days
  */
 export const getLatestBedtimeForDays = async (userID, days) => {
     try {
@@ -83,7 +83,7 @@ export const getLatestBedtimeForDays = async (userID, days) => {
 /**
  * Get latest wake up time
  * @param {number} userID 
- * @returns 
+ * @returns {Promise<number>} Latest wake up time
  */
 export const getLastWakingTime = async userID => {
     try {
@@ -98,8 +98,8 @@ export const getLastWakingTime = async userID => {
 /**
  * Get wake up time for several days
  * @param {number} userID 
- * @param {number} days 
- * @returns 
+ * @param {number} days - For what period the data is needed
+ * @returns {Promise<Array>} Wake up time for several days
  */
 export const getLastWakingTimeForDays = async (userID, days) => {
     try {
