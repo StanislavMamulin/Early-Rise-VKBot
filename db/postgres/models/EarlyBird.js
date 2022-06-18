@@ -47,10 +47,14 @@ const createModel = sequelize => sequelize.define('EarlyBird', {
  * @param {object} sequelize - Sequelize instance
  * @returns {object} EarlyBird (DB model)
  */
-export const getModel = sequelize => {
+const getModel = sequelize => {
   if (!model) {
     model = createModel(sequelize)
   }
 
   return model
+}
+
+module.exports = {
+  getModel,    
 }

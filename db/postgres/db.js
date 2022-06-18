@@ -37,7 +37,7 @@ const connect = ({
  * @param {string} connectOptions.database - database name
  * @param {number} connectOptions.port
  */
-export const connectToDB = async (connectOptions) => {
+const connectToDB = async (connectOptions) => {
     try {
         // Database connection
         sequelize = connect(connectOptions)
@@ -55,10 +55,15 @@ export const connectToDB = async (connectOptions) => {
 /**
  * Disconnect from the database
  */
-export const closeConnectionToDB = async () => {
+const closeConnectionToDB = async () => {
     try {
         await sequelize.close()
     } catch (err) {
         console.error('Failed to disconnect from the DB:', err)
     }
+}
+
+module.exports = {
+    connectToDB,
+    closeConnectionToDB,
 }

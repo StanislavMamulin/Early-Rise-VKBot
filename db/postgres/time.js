@@ -20,7 +20,7 @@ const getUserByIDAndAttribute = async (userID, attribute) => {
  * @param {Date} date - Event date
  * @param {boolean} isRiseTime - Wake up time or sleep time
  */
-export const addTimeOfEvent = async (userID, date, isRiseTime) => {
+const addTimeOfEvent = async (userID, date, isRiseTime) => {
     const timeType = isRiseTime ? 'riseTime' : 'sleepTime'
 
     try {
@@ -39,7 +39,7 @@ export const addTimeOfEvent = async (userID, date, isRiseTime) => {
  * @param {number} userID 
  * @returns {Promise<number>} Last action time 
  */
-export const getLatestActionTime = async userID => {
+const getLatestActionTime = async userID => {
     try {
         const user = await getUserByIDAndAttribute(userID, 'lastActionTime')
         return user.lastActionTime
@@ -54,7 +54,7 @@ export const getLatestActionTime = async userID => {
  * @param {number} userID 
  * @returns {Promise<number>} Latest bedtime
  */
-export const getLatestBedtime = async userID => {
+const getLatestBedtime = async userID => {
     try {
         const user = await getUserByIDAndAttribute(userID, 'sleepTime')
         return user.sleepTime[user.sleepTime.length - 1]
@@ -70,7 +70,7 @@ export const getLatestBedtime = async userID => {
  * @param {number} days - For what period the data is needed
  * @returns {Promise<Array>} Bedtime for several days
  */
-export const getLatestBedtimeForDays = async (userID, days) => {
+const getLatestBedtimeForDays = async (userID, days) => {
     try {
         const user = await getUserByIDAndAttribute(userID, 'sleepTime')
         return user.sleepTime.slice(-days)
@@ -85,7 +85,7 @@ export const getLatestBedtimeForDays = async (userID, days) => {
  * @param {number} userID 
  * @returns {Promise<number>} Latest wake up time
  */
-export const getLastWakingTime = async userID => {
+const getLastWakingTime = async userID => {
     try {
         const user = await getUserByIDAndAttribute(userID, 'riseTime')
         return user.riseTime[user.riseTime.length - 1]
@@ -101,7 +101,7 @@ export const getLastWakingTime = async userID => {
  * @param {number} days - For what period the data is needed
  * @returns {Promise<Array>} Wake up time for several days
  */
-export const getLastWakingTimeForDays = async (userID, days) => {
+const getLastWakingTimeForDays = async (userID, days) => {
     try {
         const user = await getUserByIDAndAttribute(userID, 'riseTime')
         return user.riseTime.slice(-days)
@@ -109,4 +109,13 @@ export const getLastWakingTimeForDays = async (userID, days) => {
         console.error(err)
         return []
     }
+}
+
+module.exports = {
+    addTimeOfEvent,
+    getLatestActionTime,
+    getLatestBedtime,
+    getLatestBedtimeForDays,
+    getLastWakingTime,
+    getLastWakingTimeForDays,
 }

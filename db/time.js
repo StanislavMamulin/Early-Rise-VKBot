@@ -13,7 +13,7 @@ const {
  * @param {Date} date - Event date
  * @param {boolean} isRiseTime - Wake up time or sleep time
  */
-export const addTime = async (userID, date, isRiseTime) => {
+const addTime = async (userID, date, isRiseTime) => {
     try {
         await addTimeOfEvent(userID, date, isRiseTime)
     } catch (err) {
@@ -26,7 +26,7 @@ export const addTime = async (userID, date, isRiseTime) => {
  * @param {number} userID 
  * @returns {Promise<number>} Last action time 
  */
-export const getLastActionTime = async userID => {
+const getLastActionTime = async userID => {
     try {
         return await getLatestActionTime(userID)
     } catch (err) {
@@ -40,7 +40,7 @@ export const getLastActionTime = async userID => {
  * @param {number} userID 
  * @returns {Promise<number>} Latest bedtime
  */
-export const getLastSleepTime = async userID => {
+const getLastSleepTime = async userID => {
     try {
         return await getLatestBedtime(userID)
     } catch (err) {
@@ -55,7 +55,7 @@ export const getLastSleepTime = async userID => {
  * @param {number} days - For what period the data is needed
  * @returns {Promise<Array>} Bedtime for several days
  */
-export const getLastSleepTimeForDays = async (userID, days) => {
+const getLastSleepTimeForDays = async (userID, days) => {
     try {
         return await getLatestBedtimeForDays(userID, days)
     } catch (err) {
@@ -69,7 +69,7 @@ export const getLastSleepTimeForDays = async (userID, days) => {
  * @param {number} userID 
  * @returns {Promise<number>} Latest wake up time
  */
-export const getLastWakeUpTime = async userID => {
+const getLastWakeUpTime = async userID => {
     try {
         return await getLastWakingTime(userID)
     } catch (err) {
@@ -84,11 +84,20 @@ export const getLastWakeUpTime = async userID => {
  * @param {number} days - For what period the data is needed
  * @returns {Promise<Array>} Wake up time for several days
  */
-export const getLastWakeUpTimeForDays = async (userID, days) => {
+const getLastWakeUpTimeForDays = async (userID, days) => {
     try {
         return await getLastWakingTimeForDays(userID, days)
     } catch (err) {
         console.error(err)
         return []
     }
+}
+
+module.exports = {
+    addTime,
+    getLastActionTime,
+    getLastSleepTime,
+    getLastSleepTimeForDays,
+    getLastWakeUpTime,
+    getLastWakeUpTimeForDays,
 }

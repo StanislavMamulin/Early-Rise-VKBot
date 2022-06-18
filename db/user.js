@@ -13,7 +13,7 @@ const {
  * @param {number} [userinfo.sleepNormMinutes=0] - Sleep norm in minutes
  * @param {number} [userinfo.score=0] - Starting score
  */
-export const createUser = async userinfo => {
+const createUser = async userinfo => {
     try {
         await createEarlyBirdUser(userinfo)
     } catch (err) {
@@ -26,7 +26,7 @@ export const createUser = async userinfo => {
  * @param {number} userID 
  * @returns {Promise<boolean>} User exists or not
  */
-export const isUserExists = async userID => {
+const isUserExists = async userID => {
     try {
         return await isUserPresent(userID)
     } catch (err) {
@@ -40,11 +40,17 @@ export const isUserExists = async userID => {
  * @param {number} userID 
  * @returns {Promise<string>} User first name
  */
-export const getFirstName = async userID => {
+const getFirstName = async userID => {
     try {
        return await getUserFirstName()
     } catch (err) {
         console.error(err)
         return ''
     }
+}
+
+module.exports = {
+    createUser,
+    isUserExists,
+    getFirstName,
 }

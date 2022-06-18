@@ -23,7 +23,7 @@ const { getModel } = require('./models/EarlyBird')
  * @param {number} [userinfo.sleepNormMinutes=0] - Sleep norm in minutes
  * @param {number} [userinfo.score=0] - Starting score
  */
-export const createEarlyBirdUser = async userinfo => {
+const createEarlyBirdUser = async userinfo => {
     const {
         userID,
         firstName,
@@ -51,7 +51,7 @@ export const createEarlyBirdUser = async userinfo => {
  * @param {number} userID 
  * @returns {Promise<boolean>} User exists or not
  */
-export const isUserPresent = async userID => {
+const isUserPresent = async userID => {
     try {
         const user = await getUserByIDAndAttribute(userID, 'firstName')
         return Boolean(user)
@@ -66,7 +66,7 @@ export const isUserPresent = async userID => {
  * @param {number} userID 
  * @returns {Promise<string>} User first name
  */
-export const getUserFirstName = async userID => {
+const getUserFirstName = async userID => {
     try {
         const user = await getUserByIDAndAttribute(userID, 'firstName')
         return user.firstName
@@ -74,4 +74,10 @@ export const getUserFirstName = async userID => {
         console.error(err)
         return ''
     }
+}
+
+module.exports = {
+    createEarlyBirdUser,
+    isUserPresent,
+    getUserFirstName,
 }

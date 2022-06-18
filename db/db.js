@@ -4,7 +4,7 @@ const { connectToDB, closeConnectionToDB } = require('./postgres/db')
 /**
  * Connect to database
  */
-export const connect = async () => {
+const connect = async () => {
     try {
         const connectOptions = config.get('db.pgConfig')
         await connectToDB(connectOptions)
@@ -16,10 +16,15 @@ export const connect = async () => {
 /**
  * Disconnect from the database
  */
-export const disconnect = async () => {
+const disconnect = async () => {
     try {
         await closeConnectionToDB()
     } catch (err) {
         console.error('Disconnect failed', err)
     }
+}
+
+module.exports = {
+    connect,
+    disconnect,
 }

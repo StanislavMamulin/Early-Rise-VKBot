@@ -7,7 +7,7 @@ const { getModel } = require('./models/EarlyBird')
  * @param {number} userID
  * @param {number} score
  */
-export const addScore = async (userID, score) => {
+const addScore = async (userID, score) => {
     try {
         const earlyBird = getModel()
         const user = await earlyBird.findOne({ where: { userID } })
@@ -22,7 +22,7 @@ export const addScore = async (userID, score) => {
  * @param {number} userID 
  * @returns {Promise<number>} User current score
  */
-export const getOverallScore = async userID => {
+const getOverallScore = async userID => {
     try {
         const earlyBird = getModel()
         const user = await earlyBird.findOne({ where: { userID }})
@@ -38,7 +38,7 @@ export const getOverallScore = async userID => {
  * @param {number} [topCount=5] - How many leaders to return. Deafult value 5.
  * @returns {Promise<Array>} Each element of the array is object {userID, firstName, score}
 */
-export const getLeaders = async (topCount = 5) => {
+const getLeaders = async (topCount = 5) => {
     try {
         const earlyBird = getModel()
         const result = await earlyBird.findAll({
@@ -57,11 +57,18 @@ export const getLeaders = async (topCount = 5) => {
 /**
  * Reset all users score
  */
-export const resetAllUsersScore = async () => {
+const resetAllUsersScore = async () => {
     try {
         const earlyBird = getModel()
         await earlyBird.update({ score: 0 }, { where: {} })
     } catch (err) {
         console.error(err)
     }
+}
+
+module.exports = {
+    addScore,
+    getOverallScore,
+    getLeaders,
+    resetAllUsersScore,    
 }
