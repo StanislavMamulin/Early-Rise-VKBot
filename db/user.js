@@ -42,7 +42,7 @@ const isUserExists = async userID => {
  */
 const getFirstName = async userID => {
     try {
-       return await getUserFirstName()
+       return await getUserFirstName(userID)
     } catch (err) {
         console.error(err)
         return ''

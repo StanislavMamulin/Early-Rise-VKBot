@@ -27,7 +27,7 @@ const createEarlyBirdUser = async userinfo => {
     const {
         userID,
         firstName,
-        sleepNormHour = 0,
+        sleepNormHour = 8,
         sleepNormMinutes = 0,
         score = 0,
     } = userinfo

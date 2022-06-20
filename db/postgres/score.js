@@ -10,8 +10,7 @@ const { getModel } = require('./models/EarlyBird')
 const addScore = async (userID, score) => {
     try {
         const earlyBird = getModel()
-        const user = await earlyBird.findOne({ where: { userID } })
-        await user.increment('score', { by: score })
+        await earlyBird.increment('score', { by: score, where: { userID } })
     } catch (err) {
         console.error(err)
     }
