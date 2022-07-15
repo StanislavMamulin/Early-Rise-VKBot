@@ -1,4 +1,3 @@
-const config = require('config')
 const { connectToDB, closeConnectionToDB } = require('./postgres/db')
 
 /**
@@ -6,8 +5,7 @@ const { connectToDB, closeConnectionToDB } = require('./postgres/db')
  */
 const connect = async () => {
     try {
-        const connectOptions = config.get('db.pgConfig')
-        await connectToDB(connectOptions)
+        await connectToDB()
     } catch (err) {
         console.error('Connect failed:', err)
     }

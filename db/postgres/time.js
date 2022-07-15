@@ -1,4 +1,5 @@
-const { getModel } = require('./models/EarlyBird')
+const { EarlyBirds, sequelize } = require('./sequelize')
+const { Sequelize } = require('sequelize')
 
 /**
  * Get User info from database
@@ -7,11 +8,16 @@ const { getModel } = require('./models/EarlyBird')
  * @returns {Promise<object>} Found User info
  */
 const getUserByIDAndAttribute = async (userID, attribute) => {
-    const earlyBird = getModel()
-    return await earlyBird.findOne({ 
-        where: { userID },
-        attributes: [attribute],
-    })
+    try {
+        const user = await EarlyBirds.findOne({ 
+            where: { userID },
+            attributes: [attribute],
+        })
+        
+        return user
+    } catch (err) {
+        console.error(err)
+    }
 }
 
 /**
@@ -24,11 +30,14 @@ const addTimeOfEvent = async (userID, date, isRiseTime) => {
     const timeType = isRiseTime ? 'riseTime' : 'sleepTime'
 
     try {
-        const user = await getUserByIDAndAttribute(userID, timeType)
-        user[timeType].push(date)
-        user.lastActionTime = new Date()
+        await EarlyBirds.update(
+            { 
+                [timeType] : sequelize.fn('array_append', sequelize.col(timeType), new Date()),
+                lastActionTime : new Date(),
+            },
+            { where: { userID }, }
+        )
 
-        await user.save()
     } catch (err) {
         console.error(err)
     }

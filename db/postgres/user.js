@@ -1,4 +1,4 @@
-const { getModel } = require('./models/EarlyBird')
+const { EarlyBirds } = require('./sequelize')
 
 /**
  * Get User info from database
@@ -7,8 +7,7 @@ const { getModel } = require('./models/EarlyBird')
  * @returns {Promise<object>} Information about the found user
  */
  const getUserByIDAndAttribute = async (userID, attribute) => {
-    const earlyBird = getModel()
-    return await earlyBird.findOne({ 
+    return await EarlyBirds.findOne({ 
         where: { userID },
         attributes: [attribute],
     })
@@ -30,16 +29,19 @@ const createEarlyBirdUser = async userinfo => {
         sleepNormHour = 8,
         sleepNormMinutes = 0,
         score = 0,
+        riseTime = [],
+        sleepTime = [],
     } = userinfo
 
     try {
-        const earlyBird = getModel()
-        await earlyBird.create({
+        await EarlyBirds.create({
             userID,
             firstName,
             sleepNormHour,
             sleepNormMinutes,
             score,
+            riseTime,
+            sleepTime,
         })
     } catch (err) {
         console.error(err)

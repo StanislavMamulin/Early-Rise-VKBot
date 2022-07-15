@@ -1,6 +1,5 @@
 const { Op } = require('sequelize')
-
-const { getModel } = require('./models/EarlyBird')
+const { EarlyBirds } = require('./sequelize')
 
 /**
  * Increment user score
@@ -9,8 +8,7 @@ const { getModel } = require('./models/EarlyBird')
  */
 const addScore = async (userID, score) => {
     try {
-        const earlyBird = getModel()
-        await earlyBird.increment('score', { by: score, where: { userID } })
+        await EarlyBirds.increment('score', { by: score, where: { userID } })
     } catch (err) {
         console.error(err)
     }
@@ -23,8 +21,7 @@ const addScore = async (userID, score) => {
  */
 const getOverallScore = async userID => {
     try {
-        const earlyBird = getModel()
-        const user = await earlyBird.findOne({ where: { userID }})
+        const user = await EarlyBirds.findOne({ where: { userID }})
         return user.score
     } catch (err) {
         console.error(err)
@@ -39,14 +36,12 @@ const getOverallScore = async userID => {
 */
 const getLeaders = async (topCount = 5) => {
     try {
-        const earlyBird = getModel()
-        const result = await earlyBird.findAll({
+        return await EarlyBirds.findAll({
             attributes: ['userID', 'firstName', 'score'],
             where: { score: { [Op.gt]: 0, } },
             limit: topCount,
             order: [ ['score', 'DESC'] ],
         })
-        return result
     } catch (err) {
         console.error(err)
         return []
@@ -58,8 +53,7 @@ const getLeaders = async (topCount = 5) => {
  */
 const resetAllUsersScore = async () => {
     try {
-        const earlyBird = getModel()
-        await earlyBird.update({ score: 0 }, { where: {} })
+        await EarlyBirds.update({ score: 0 }, { where: {} })
     } catch (err) {
         console.error(err)
     }
