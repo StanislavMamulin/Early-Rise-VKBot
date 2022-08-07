@@ -38,7 +38,7 @@ const getLastActionTime = async userID => {
 /**
  * Get latest bedtime
  * @param {number} userID 
- * @returns {Promise<number>} Latest bedtime
+ * @returns {Promise<Date>} Latest bedtime
  */
 const getLastSleepTime = async userID => {
     try {
@@ -53,7 +53,7 @@ const getLastSleepTime = async userID => {
  * Get bedtime for several days
  * @param {number} userID 
  * @param {number} days - For what period the data is needed
- * @returns {Promise<Array>} Bedtime for several days
+ * @returns {Promise<Date[]>} Bedtime for several days
  */
 const getLastSleepTimeForDays = async (userID, days) => {
     try {

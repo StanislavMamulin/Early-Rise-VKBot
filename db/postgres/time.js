@@ -1,5 +1,4 @@
 const { EarlyBirds, sequelize } = require('./sequelize')
-const { Sequelize } = require('sequelize')
 
 /**
  * Get User info from database
@@ -32,8 +31,8 @@ const addTimeOfEvent = async (userID, date, isRiseTime) => {
     try {
         await EarlyBirds.update(
             { 
-                [timeType] : sequelize.fn('array_append', sequelize.col(timeType), new Date()),
-                lastActionTime : new Date(),
+                [timeType] : sequelize.fn('array_append', sequelize.col(timeType), date),
+                lastActionTime : date,
             },
             { where: { userID }, }
         )
@@ -46,7 +45,7 @@ const addTimeOfEvent = async (userID, date, isRiseTime) => {
 /**
  * Get a last action time for user
  * @param {number} userID 
- * @returns {Promise<number>} Last action time 
+ * @returns {Promise<Date>} Last action time 
  */
 const getLatestActionTime = async userID => {
     try {
@@ -61,7 +60,7 @@ const getLatestActionTime = async userID => {
 /**
  * Get latest bedtime
  * @param {number} userID 
- * @returns {Promise<number>} Latest bedtime
+ * @returns {Promise<Date>} Latest bedtime
  */
 const getLatestBedtime = async userID => {
     try {
@@ -77,7 +76,7 @@ const getLatestBedtime = async userID => {
  * Get bedtime for several days
  * @param {number} userID 
  * @param {number} days - For what period the data is needed
- * @returns {Promise<Array>} Bedtime for several days
+ * @returns {Promise<Date[]>} Sleep time array for several days
  */
 const getLatestBedtimeForDays = async (userID, days) => {
     try {
@@ -92,7 +91,7 @@ const getLatestBedtimeForDays = async (userID, days) => {
 /**
  * Get latest wake up time
  * @param {number} userID 
- * @returns {Promise<number>} Latest wake up time
+ * @returns {Promise<Date>} Latest wake up time
  */
 const getLastWakingTime = async userID => {
     try {
@@ -108,7 +107,7 @@ const getLastWakingTime = async userID => {
  * Get wake up time for several days
  * @param {number} userID 
  * @param {number} days - For what period the data is needed
- * @returns {Promise<Array>} Wake up time for several days
+ * @returns {Promise<Date[]>} Array of wake up time for several days
  */
 const getLastWakingTimeForDays = async (userID, days) => {
     try {

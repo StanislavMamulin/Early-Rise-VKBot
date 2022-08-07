@@ -16,6 +16,12 @@ const getNormalTime = decTime => {
     return `${hours}:${minutes}`
 }
 
+/**
+ * Get data for chart labels
+ * @param {number[]} sleepLabels - Array of sleep timestamps
+ * @param {number[]} wakeUpLabels - Array of wake timestamps
+ * @returns {[Date, Date]} Array of two elements - the earliest date and the latest date
+ */
 const getLabels = (sleepLabels, wakeUpLabels) => {
     const dates = [...sleepLabels, ...wakeUpLabels]
     const minDate = new Date(Math.min.apply(null, dates))
@@ -94,10 +100,10 @@ const getTimeInDecFormat = (hours, minutes) => {
 
 const getDatasetForDates = dates => dates
     .map(date => {
-        const hours = date.getHours()
-        const minutes = date.getMinutes()
+        const hours = date.getUTCHours()
+        const minutes = date.getUTCMinutes()
         const datasetDate = new Date(date)
-        datasetDate.setHours(0, 0, 0, 0)
+        datasetDate.setUTCHours(0, 0, 0, 0)
 
         return {
             t: datasetDate,
