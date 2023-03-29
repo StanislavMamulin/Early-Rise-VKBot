@@ -54,6 +54,14 @@ const greetingResponse = async (userID, date, greeting, isWakeUpTime, topicID) =
     sendMessage(responseString, userID, topicID, firstName)
 }
 
+/**
+ * 
+ * @param {object} message - incoming message (VK format)
+ * @param {number} message.from_id - user ID
+ * @param {string} message.text - message text
+ * @param {number} message.topic_id - the thread from which the message came
+ * @param {Date} message.date - message date
+ */
 module.exports.incomingMessage = async message => {
     const {
         from_id: userID,

@@ -1,17 +1,14 @@
 const { Op } = require('sequelize')
-
-const { getModel } = require('./models/mainTable')
+const { EarlyBirds } = require('./sequelize')
 
 /**
  * Increment user score
  * @param {number} userID
  * @param {number} score
  */
-export const plusScore = async (userID, score) => {
+const addScore = async (userID, score) => {
     try {
-        const earlyBird = getModel()
-        const user = await earlyBird.findOne({ where: { userID } })
-        await user.increment('score', { by: score })
+        await EarlyBirds.increment('score', { by: score, where: { userID } })
     } catch (err) {
         console.error(err)
     }
@@ -20,12 +17,11 @@ export const plusScore = async (userID, score) => {
 /**
  * Get User score
  * @param {number} userID 
- * @returns {number} User current score
+ * @returns {Promise<number>} User current score
  */
-export const getTotalScore = async userID => {
+const getOverallScore = async userID => {
     try {
-        const earlyBird = getModel()
-        const user = await earlyBird.findOne({ where: { userID }})
+        const user = await EarlyBirds.findOne({ where: { userID }})
         return user.score
     } catch (err) {
         console.error(err)
@@ -35,19 +31,17 @@ export const getTotalScore = async userID => {
 
 /** 
  * Get leaders
- * @param {number} topCount - How many leaders to return
- * @returns {Array} Each elemnt of the array is object {userID, firstName, score}
+ * @param {number} [topCount=5] - How many leaders to return. Deafult value 5.
+ * @returns {Promise<Array>} Each element of the array is object {userID, firstName, score}
 */
-export const getLeaderboard = async (topCount = 5) => {
+const getLeaders = async (topCount = 5) => {
     try {
-        const earlyBird = getModel()
-        const result = await earlyBird.findAll({
+        return await EarlyBirds.findAll({
             attributes: ['userID', 'firstName', 'score'],
             where: { score: { [Op.gt]: 0, } },
             limit: topCount,
             order: [ ['score', 'DESC'] ],
         })
-        return result
     } catch (err) {
         console.error(err)
         return []
@@ -57,11 +51,17 @@ export const getLeaderboard = async (topCount = 5) => {
 /**
  * Reset all users score
  */
-export const clearScore = async () => {
+const resetAllUsersScore = async () => {
     try {
-        const earlyBird = getModel()
-        await earlyBird.update({ score: 0 }, { where: {} })
+        await EarlyBirds.update({ score: 0 }, { where: {} })
     } catch (err) {
         console.error(err)
     }
+}
+
+module.exports = {
+    addScore,
+    getOverallScore,
+    getLeaders,
+    resetAllUsersScore,    
 }

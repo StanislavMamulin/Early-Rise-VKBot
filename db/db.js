@@ -1,19 +1,28 @@
-const config = require('config')
 const { connectToDB, closeConnectionToDB } = require('./postgres/db')
 
-export const connect = async () => {
+/**
+ * Connect to database
+ */
+const connect = async () => {
     try {
-        const connectOptions = config.get('db.pgConfig')
-        await connectToDB(connectOptions)
+        await connectToDB()
     } catch (err) {
         console.error('Connect failed:', err)
     }
 }
 
-export const disconnect = async () => {
+/**
+ * Disconnect from the database
+ */
+const disconnect = async () => {
     try {
         await closeConnectionToDB()
     } catch (err) {
         console.error('Disconnect failed', err)
     }
+}
+
+module.exports = {
+    connect,
+    disconnect,
 }

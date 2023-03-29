@@ -1,11 +1,9 @@
 const { DataTypes } = require('sequelize')
 
-let model;
-
 /**
  * Create a database model
- * @param {Object} sequelize - Sequelize instance
- * @returns {Object} EarlyBird (DB model)
+ * @param {object} sequelize - Sequelize instance
+ * @returns {object} EarlyBird (DB model)
  */
 const createModel = sequelize => sequelize.define('EarlyBird', {
   userID: {
@@ -39,18 +37,12 @@ const createModel = sequelize => sequelize.define('EarlyBird', {
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
-  lastActionTime: DataTypes.DATE,
+  lastActionTime: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW,
+  },
 })
 
-/**
- * Get or creating a database model if it doesn`t exist
- * @param {Object} sequelize - Sequelize instance
- * @returns {Object} EarlyBird (DB model)
- */
-export const getModel = sequelize => {
-  if (!model) {
-    model = createModel(sequelize)
-  }
-
-  return model
+module.exports = {
+  createModel,    
 }

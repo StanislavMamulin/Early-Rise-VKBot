@@ -2,15 +2,27 @@ const { getTimeZoneOffset } = require('../vk/dataManager')
 const { getLastSleepTime, getLastActionTime } = require('../db/time')
 const { getTotalSleepTimeMessage } = require('./responseText')
 
-// convert to JS time from VK message format (add ms)
-const convertToJSFormatFromVK = VKTimestamp => new Date(VKTimestamp * 1000)
+/**
+ * Convert to JS time from VK message format (adds ms)
+ * @param {number} VKTimestamp - Date timestamp in seconds format
+ * @returns {number} Date timestamp in millisecond format
+ */
+const convertToJSFormatFromVK = VKTimestamp => VKTimestamp * 1000
 
+/**
+ * Get UTC date with timezone offset
+ * @param {number} topicID - Topic ID
+ * @param {number} date - Message timestamp in seconds format
+ * @returns {Date} Date object with "local UTC" timestamp. 
+ * Where the UTC time is offset by the time of the event.
+ */
 const getDateWithTopicOffset = (topicID, date) => {
-    const inputDate = convertToJSFormatFromVK(date)
+    const inputDate = new Date(convertToJSFormatFromVK(date))
     const hoursOffset = getTimeZoneOffset(topicID)
-    const topicTime = inputDate.setHours(inputDate.getHours() + hoursOffset) // in ms
 
-    return new Date(topicTime)
+    inputDate.setUTCHours(inputDate.getUTCHours() + hoursOffset)
+
+    return inputDate
 }
 
 const timestampToHoursAndMinutes = timestamp => {
@@ -37,6 +49,12 @@ const checkFrequency = async (userID, postTime) => {
     return isCorrectFrequencyPosting(postTime, lastPostTime)
 }
 
+/**
+ * 
+ * @param {number} userID - User ID
+ * @param {Date} wakeUpTime - Wake up time
+ * @returns {Promise<number>} Sleep time in ms
+ */
 const calculateSleepTime = async (userID, wakeUpTime) => {
     const lastSleepTime = await getLastSleepTime(userID)
 

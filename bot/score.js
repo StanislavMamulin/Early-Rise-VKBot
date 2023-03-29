@@ -47,8 +47,14 @@ const getGoToSleepScore = hour => {
     return 0
 }
 
+/**
+ * 
+ * @param {Date} date - Event date in UTC time
+ * @param {boolean} isWakeUp - This is the event of awakening or sleeping
+ * @returns {number} Score
+ */
 module.exports.getScore = (date, isWakeUp) => {
-    const hour = date.getHours()
+    const hour = date.getUTCHours()
 
     if (isWakeUp) {
         return getWakeUpScore(hour)

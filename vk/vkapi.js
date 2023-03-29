@@ -58,7 +58,7 @@ const deleteComments = async (comments, topicID) => {
     const promises = comments.map(async comment => {
         const { id } = comment
         return api('board.deleteComment', {
-            access_token: process.env.TOKEN,
+            access_token: config.get('VK.adminToken'),
             group_id: groupID,
             topic_id: topicID,
             comment_id: id,
@@ -107,10 +107,10 @@ const deleteAllComments = async (topicID, beforeDate = 0) => {
 
 const sendMessage = async (responseString, userID, topicID, firstName) => {
     const randomID = customAlphabet('1234567890', 10)()
-
+    console.log('in sendMessage\n')
     try {
         await api('messages.send', {
-            access_token: process.env.TOKEN,
+            access_token: config.get('VK.adminToken'),
             user_id: userID,
             random_id: randomID,
             message: responseString,
@@ -133,7 +133,7 @@ const sendMessageWithPhoto = async (userID, ownerID, mediaID) => {
         const photoAttachmentString = `photo${ownerID}_${mediaID}`
 
         api('messages.send', {
-            access_token: process.env.TOKEN,
+            access_token: config.get('VK.adminToken'),
             user_id: userID,
             random_id: randomID,
             attachment: photoAttachmentString,
@@ -146,7 +146,7 @@ const sendMessageWithPhoto = async (userID, ownerID, mediaID) => {
 const getVKFirstName = async userID => {
     try {
         const userVK = await api('users.get', {
-            access_token: process.env.TOKEN,
+            access_token: config.get('VK.adminToken'),
             user_id: userID,
         })
 
@@ -164,14 +164,14 @@ const isJoin = joinEvent => {
     console.log(joinEvent)
     console.log(joinType)
 
-    return joinType === 'approved'
+    return joinType === 'approved' || joinType === 'join'
 }
 
 const getUploadServer = async userID => {
     try {
         const getServerResponse = await api('photos.getMessagesUploadServer', {
             peer_id: userID,
-            access_token: process.env.TOKEN,
+            access_token: config.get('VK.adminToken'),
         })
 
         return getServerResponse.response
@@ -200,7 +200,7 @@ const sendPhotoToGroup = async (URL, photoPath) => {
 
 const saveMessagePhoto = async (server, photo, hash) => {
     const uploadPhotoResponse = await api('photos.saveMessagesPhoto', {
-        access_token: process.env.TOKEN,
+        access_token: config.get('VK.adminToken'),
         server,
         photo,
         hash,

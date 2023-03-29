@@ -9,7 +9,7 @@ const { clearScoreSchedule } = require('./service/services')
 const { getStepTopicURL } = require('./vk/dataManager')
 
 const bot = new VKBot({
-    token: process.env.TOKEN,
+    token: config.get('VK.adminToken'),
     group_id: config.get('VK.groupID'),
 })
 
